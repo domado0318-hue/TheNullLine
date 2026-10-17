@@ -10,6 +10,7 @@ export class GameScene extends Phaser.Scene {
 
   private readonly worldWidth = 3000;
   private readonly worldHeight = 3000;
+  private readonly wallThickness = 16;
 
   constructor() {
     super('GameScene');
@@ -17,6 +18,7 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this.createWorldGrid();
+    this.createWorldWalls();
 
     const centerX = this.worldWidth / 2;
     const centerY = this.worldHeight / 2;
@@ -62,13 +64,13 @@ export class GameScene extends Phaser.Scene {
     this.player.setPosition(
       Phaser.Math.Clamp(
         this.player.x + this.movementDirection.x,
-        halfWidth,
-        this.worldWidth - halfWidth,
+        this.wallThickness + halfWidth,
+        this.worldWidth - this.wallThickness - halfWidth,
       ),
       Phaser.Math.Clamp(
         this.player.y + this.movementDirection.y,
-        halfHeight,
-        this.worldHeight - halfHeight,
+        this.wallThickness + halfHeight,
+        this.worldHeight - this.wallThickness - halfHeight,
       ),
     );
   }
@@ -87,5 +89,16 @@ export class GameScene extends Phaser.Scene {
     for (let y = 0; y <= this.worldHeight; y += spacing) {
       grid.lineBetween(0, y, this.worldWidth, y);
     }
+  }
+
+  private createWorldWalls(): void {
+    const walls = this.add.graphics();
+    const thickness = this.wallThickness;
+
+    walls.fillStyle(0x3b4558);
+    walls.fillRect(0, 0, this.worldWidth, thickness);
+    walls.fillRect(0, this.worldHeight - thickness, this.worldWidth, thickness);
+    walls.fillRect(0, thickness, thickness, this.worldHeight - thickness * 2);
+    walls.fillRect(this.worldWidth - thickness, thickness, thickness, this.worldHeight - thickness * 2);
   }
 }
