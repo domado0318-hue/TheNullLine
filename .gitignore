@@ -1,0 +1,14 @@
+node_modules/
+dist/
+
+# Environment files and local overrides
+.env
+.env.*
+.envrc
+*.local
+
+# Logs and generated files
+*.log
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
