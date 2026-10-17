@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { createObstacleLayout } from '../world/createObstacleLayout';
 
 type MovementKeys = Record<'up' | 'down' | 'left' | 'right', Phaser.Input.Keyboard.Key>;
 
@@ -24,6 +25,8 @@ export class GameScene extends Phaser.Scene {
 
     // 외부 이미지 없이 플레이어를 나타내는 48×48 사각형을 표시합니다.
     this.player = this.add.rectangle(centerX, centerY, 48, 48, 0x5ee6a8);
+
+    this.createObstacles();
 
     this.cameras.main.setBounds(
       -this.wallThickness,
@@ -104,5 +107,21 @@ export class GameScene extends Phaser.Scene {
     walls.fillRect(-thickness, this.worldHeight, this.worldWidth + thickness * 2, thickness);
     walls.fillRect(-thickness, 0, thickness, this.worldHeight);
     walls.fillRect(this.worldWidth, 0, thickness, this.worldHeight);
+  }
+
+  private createObstacles(): void {
+    const obstacles = createObstacleLayout(
+      this.worldWidth,
+      this.worldHeight,
+      Math.max(this.player.displayWidth, this.player.displayHeight),
+    );
+
+    for (const obstacle of obstacles) {
+      if (obstacle.shape === 'rectangle') {
+        this.add.rectangle(obstacle.x, obstacle.y, obstacle.size, obstacle.size, 0xb87942);
+      } else {
+        this.add.circle(obstacle.x, obstacle.y, obstacle.size / 2, 0x9b72b0);
+      }
+    }
   }
 }
