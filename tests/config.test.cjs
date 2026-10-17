@@ -16,13 +16,15 @@ function isolated(script) {
   assert.equal(result.status, 0, result.stderr || result.stdout);
 }
 
-test('Invalid loop steps are rejected before enemy, movement, world or simulation loops run', () => {
+test('Invalid loop steps are rejected before enemy, weapon, movement, world or simulation loops run', () => {
   isolated(`
     const {enemyConfig} = load('config/enemies');
     const {navigationConfig} = load('config/navigation');
+    const {playerSwordConfig} = load('config/weapons');
     const {worldConfig} = load('config/world');
     const {gameConfig} = load('config/game');
     const {EnemySystem} = load('enemies/EnemySystem');
+    const {CombatSystem} = load('combat/CombatSystem');
     const {createCombatant} = load('combat/types');
     const {moveBody} = load('world/geometry');
     const {NavigationGrid} = load('enemies/NavigationGrid');
@@ -34,6 +36,10 @@ test('Invalid loop steps are rejected before enemy, movement, world or simulatio
       enemyConfig.spawn.intervalSeconds = bad;
       assert.throws(()=>{const enemy=new EnemySystem(world);enemy.update(1/60,player,{x:0,y:0,width:1280,height:720})}, /spawn.intervalSeconds/);
       enemyConfig.spawn.intervalSeconds = previous;
+      previous = playerSwordConfig.maximumHitAngleStep;
+      playerSwordConfig.maximumHitAngleStep = bad;
+      assert.throws(()=>new CombatSystem('sword').update(1/60,player,[],world), /maximumHitAngleStep/);
+      playerSwordConfig.maximumHitAngleStep = previous;
       previous = navigationConfig.collisionStep;
       navigationConfig.collisionStep = bad;
       assert.throws(()=>moveBody(player,10,0,world,[]), /collisionStep/);
