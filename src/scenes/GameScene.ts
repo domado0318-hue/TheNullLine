@@ -7,7 +7,6 @@ export class GameScene extends Phaser.Scene {
   private movementKeys!: MovementKeys;
   private readonly movementDirection = new Phaser.Math.Vector2();
   private readonly movementSpeed = 300; // Pixels per second.
-
   private readonly worldWidth = 3000;
   private readonly worldHeight = 3000;
   private readonly wallThickness = 16;
@@ -26,7 +25,12 @@ export class GameScene extends Phaser.Scene {
     // 외부 이미지 없이 플레이어를 나타내는 48×48 사각형을 표시합니다.
     this.player = this.add.rectangle(centerX, centerY, 48, 48, 0x5ee6a8);
 
-    this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
+    this.cameras.main.setBounds(
+      -this.wallThickness,
+      -this.wallThickness,
+      this.worldWidth + this.wallThickness * 2,
+      this.worldHeight + this.wallThickness * 2,
+    );
     this.cameras.main.startFollow(this.player);
 
     const keyboard = this.input.keyboard;
@@ -64,13 +68,13 @@ export class GameScene extends Phaser.Scene {
     this.player.setPosition(
       Phaser.Math.Clamp(
         this.player.x + this.movementDirection.x,
-        this.wallThickness + halfWidth,
-        this.worldWidth - this.wallThickness - halfWidth,
+        halfWidth,
+        this.worldWidth - halfWidth,
       ),
       Phaser.Math.Clamp(
         this.player.y + this.movementDirection.y,
-        this.wallThickness + halfHeight,
-        this.worldHeight - this.wallThickness - halfHeight,
+        halfHeight,
+        this.worldHeight - halfHeight,
       ),
     );
   }
@@ -96,9 +100,9 @@ export class GameScene extends Phaser.Scene {
     const thickness = this.wallThickness;
 
     walls.fillStyle(0x3b4558);
-    walls.fillRect(0, 0, this.worldWidth, thickness);
-    walls.fillRect(0, this.worldHeight - thickness, this.worldWidth, thickness);
-    walls.fillRect(0, thickness, thickness, this.worldHeight - thickness * 2);
-    walls.fillRect(this.worldWidth - thickness, thickness, thickness, this.worldHeight - thickness * 2);
+    walls.fillRect(-thickness, -thickness, this.worldWidth + thickness * 2, thickness);
+    walls.fillRect(-thickness, this.worldHeight, this.worldWidth + thickness * 2, thickness);
+    walls.fillRect(-thickness, 0, thickness, this.worldHeight);
+    walls.fillRect(this.worldWidth, 0, thickness, this.worldHeight);
   }
 }
