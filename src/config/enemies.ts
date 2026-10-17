@@ -1,3 +1,4 @@
+import type { EnemyExperienceCategory } from './experience';
 
 export const enemyConfig = {
   size: 32, // 두 Enemy 타입에 공통인 사각형 한 변 길이 (px)
@@ -9,10 +10,12 @@ export const enemyConfig = {
     horizontal: {
       maxHp: 72, // 좌우 순찰 Enemy 최대/시작 HP
       attackDamage: 12, // 좌우 순찰 Enemy 기본 공격력
+      experienceCategory: 'normal1' as const satisfies EnemyExperienceCategory, // 경험치 보상 분류 (이동 타입과 별개)
     },
     circular: {
       maxHp: 48, // 원형 순찰 Enemy 최대/시작 HP
       attackDamage: 8, // 원형 순찰 Enemy 기본 공격력
+      experienceCategory: 'normal2' as const satisfies EnemyExperienceCategory, // 경험치 보상 분류 (experience.ts에서 보상 조정)
     },
   },
   spawn: {

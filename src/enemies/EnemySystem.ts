@@ -6,6 +6,7 @@ import { NavigationGrid } from './NavigationGrid';
 import { getEnemyWeapon } from '../config/weapons';
 import { createCombatant } from '../combat/types';
 import type { Combatant } from '../combat/types';
+import type { EnemyExperienceCategory } from '../config/experience';
 import { assertInteger, assertNonNegative, assertPositive } from '../config/validate';
 import { clearAttackLine, effectiveAttackRange } from '../combat/weaponRules';
 
@@ -14,6 +15,7 @@ export type EnemyState = 'idle' | 'patrol' | 'chase' | 'wait' | 'attack';
 interface RingSlot { ring: number; index: number }
 export interface Enemy extends Combatant {
   kind: EnemyKind;
+  experienceCategory: EnemyExperienceCategory;
   state: EnemyState;
   anchor: Point;
   direction: number;
@@ -85,7 +87,7 @@ export class EnemySystem {
       const enemy: Enemy = {
         ...createCombatant({ ...point, id: this.nextId++, size: enemyConfig.size }, 'enemy',
           stats.maxHp, stats.attackDamage),
-        kind,
+        kind, experienceCategory: stats.experienceCategory,
         state: 'idle', anchor: { ...point }, direction: this.random() < 0.5 ? -1 : 1,
         angle: 0, patrolRadius: enemyConfig.patrol.circleRadius, stateSeconds: 0,
         path: [], repathAt: this.elapsedSeconds, blockedSeconds: 0, outOfRangeSeconds: 0,

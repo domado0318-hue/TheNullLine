@@ -15,6 +15,9 @@ import { CombatRenderer } from '../combat/CombatRenderer';
 import type { Combatant } from '../combat/types';
 import { HealthBar } from '../ui/HealthBar';
 import { showDefeat, showWeaponSelection } from '../ui/GameOverlay';
+import { ExperienceSystem } from '../experience/ExperienceSystem';
+import { ExperienceRenderer } from '../experience/ExperienceRenderer';
+import { ExperienceHud } from '../ui/ExperienceHud';
 
 export class GameScene extends Phaser.Scene {
   private player!: PlayerController;
@@ -25,6 +28,9 @@ export class GameScene extends Phaser.Scene {
   private combat?: CombatSystem;
   private combatRenderer!: CombatRenderer;
   private defeated = false;
+  private experience!: ExperienceSystem;
+  private experienceRenderer!: ExperienceRenderer;
+  private experienceHud!: ExperienceHud;
 
   constructor() { super('GameScene'); }
 
@@ -33,6 +39,10 @@ export class GameScene extends Phaser.Scene {
     this.healthBars.clear();
     this.combat = undefined;
     this.defeated = false;
+    this.experience = new ExperienceSystem();
+    this.experienceRenderer = new ExperienceRenderer(this);
+    this.experienceHud = new ExperienceHud(this);
+    this.experienceHud.update(this.experience);
     this.world = {
       width: worldConfig.width,
       height: worldConfig.height,
@@ -58,11 +68,14 @@ export class GameScene extends Phaser.Scene {
       this.player.update(step, this.world, this.enemySystem.enemies);
       this.enemySystem.update(step, this.player.body, this.getViewport());
       combat.update(step, this.player.body, this.enemySystem.enemies, this.world);
-      this.enemySystem.removeDefeated();
+      this.experience.dropFromDefeated(this.enemySystem.removeDefeated());
+      if (this.player.body.hp > 0) this.experience.update(step, this.player.body);
       return this.player.body.hp > 0;
     });
     this.renderActors();
     this.combatRenderer.sync(combat);
+    this.experienceRenderer.sync(this.experience);
+    this.experienceHud.update(this.experience);
     if (this.player.body.hp <= 0) {
       this.defeated = true;
       showDefeat(this);

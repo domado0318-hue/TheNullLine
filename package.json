@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
     "build": "tsc --noEmit && vite build",
-    "test": "node --test tests/gameplay.test.cjs tests/combat.test.cjs tests/ui.test.cjs tests/config.test.cjs",
+    "test": "node --test tests/gameplay.test.cjs tests/combat.test.cjs tests/ui.test.cjs tests/experience.test.cjs tests/config.test.cjs",
     "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort"
   },
   "engines": {
