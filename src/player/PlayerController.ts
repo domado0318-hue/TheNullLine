@@ -2,16 +2,18 @@ import Phaser from 'phaser';
 import { playerConfig } from '../config/player';
 import { moveBody } from '../world/geometry';
 import type { Body, CollisionWorld } from '../world/geometry';
+import { createCombatant } from '../combat/types';
+import type { Combatant } from '../combat/types';
 
 type MovementKeys = Record<'up' | 'down' | 'left' | 'right', Phaser.Input.Keyboard.Key>;
 
 export class PlayerController {
-  readonly body: Body;
+  readonly body: Combatant;
   readonly view: Phaser.GameObjects.Rectangle;
   private readonly keys: MovementKeys;
 
   constructor(scene: Phaser.Scene, world: CollisionWorld) {
-    this.body = { id: 0, x: world.width / 2, y: world.height / 2, size: playerConfig.size };
+    this.body = createCombatant({ id: 0, x: world.width / 2, y: world.height / 2, size: playerConfig.size }, 'player', playerConfig.maxHp, playerConfig.attackDamage);
     this.view = scene.add.rectangle(this.body.x, this.body.y, playerConfig.size, playerConfig.size, playerConfig.color);
     const keyboard = scene.input.keyboard;
     if (!keyboard) throw new Error('Keyboard input is required for player movement.');
@@ -24,6 +26,7 @@ export class PlayerController {
   }
 
   update(deltaSeconds: number, world: CollisionWorld, enemies: readonly Body[]): void {
+    if (this.body.hp <= 0) return;
     const x = Number(this.keys.right.isDown) - Number(this.keys.left.isDown);
     const y = Number(this.keys.down.isDown) - Number(this.keys.up.isDown);
     const length = Math.hypot(x, y);
