@@ -182,7 +182,7 @@ test('Actual combat death produces one configured drop through Enemy removal, an
   Object.assign(target, { x: 1800, y: 1500, hp: 1, state: 'idle' });
   const combat = new CombatSystem('bullet');
   const experience = new ExperienceSystem();
-  combat.update(1, body, system.enemies, scenery);
+  combat.update(1, body, system.enemies, scenery, { x: body.x - 640, y: body.y - 360, width: 1280, height: 720 });
   assert.equal(target.hp, 0);
   const removed = system.removeDefeated();
   experience.dropFromDefeated(removed);

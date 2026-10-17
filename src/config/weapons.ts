@@ -30,13 +30,13 @@ export type WeaponConfig = SwordConfig | BulletConfig;
 export const playerSwordConfig: SwordConfig = {
   kind: 'sword', // Player 회전 검
   intervalSeconds: 0.5, // 검 생성 간격 (초)
-  attackRange: 140, // 공격 가능한 최대 중심 거리 (px, 검의 실제 도달 범위도 확인)
+  attackRange: 160, // 공격 가능한 최대 중심 거리 (px, Enemy 검보다 긴 초기 사거리)
   damageMultiplier: 1, // Player 기본 공격력에 곱할 배율
   color: 0xffe18a, // 검 색상 (0xRRGGBB)
-  orbitRadius: 96, // Player 중심에서 검 중심까지의 거리 (px)
+  orbitRadius: 120, // Player 중심에서 검 중심까지의 거리 (px)
   angularSpeed: Math.PI * 4, // 검 회전 속도 (rad/초, 현재 초당 2회전)
   lifetimeSeconds: 0.5, // 검 한 개의 유지 시간 (초)
-  bladeLength: 42, // 검 길이 (px)
+  bladeLength: 48, // 검 길이 (px, 끝 도달 거리 = 120 + 48/2 = 144)
   bladeWidth: 10, // 검 폭 (px)
   maximumHitAngleStep: 0.1, // 회전 중 타격 검사 최대 각도 간격 (rad, 0보다 커야 함)
 };
@@ -54,20 +54,20 @@ export const playerBulletConfig: BulletConfig = {
   attackLockSeconds: 0, // 발사 이동 잠금 시간 (초, Player에는 적용하지 않음)
 };
 export const enemySwordConfig: SwordConfig = {
-  kind: 'sword', // 좌우 순찰 Enemy 회전 검
+  kind: 'sword', // Enemy 1 (근접 타입) 회전 검
   intervalSeconds: 1.2, // 검 생성 간격 (초)
-  attackRange: 132, // 공격/추적 정지 기준 중심 거리 (px, 실제 검 도달 범위도 확인)
+  attackRange: 82, // 공격/추적 정지 기준 중심 거리 (px, Player 검과 거리 차이 확보)
   damageMultiplier: 1, // Enemy 기본 공격력에 곱할 배율
   color: 0xff8a9f, // 검 색상 (0xRRGGBB)
-  orbitRadius: 88, // Enemy 중심에서 검 중심까지의 거리 (px)
+  orbitRadius: 44, // Enemy 중심에서 검 중심까지의 거리 (px)
   angularSpeed: Math.PI * 4, // 검 회전 속도 (rad/초)
   lifetimeSeconds: 0.5, // 검 한 개의 유지 시간 및 Enemy 이동 잠금 시간 (초)
-  bladeLength: 40, // 검 길이 (px)
+  bladeLength: 28, // 검 길이 (px, 끝 도달 거리 = 44 + 28/2 = 58)
   bladeWidth: 10, // 검 폭 (px)
   maximumHitAngleStep: 0.1, // 회전 중 타격 검사 최대 각도 간격 (rad, 0보다 커야 함)
 };
 export const enemyBulletConfig: BulletConfig = {
-  kind: 'bullet', // 원형 순찰 Enemy 직선 탄환
+  kind: 'bullet', // Enemy 2 (원거리 타입) 직선 탄환
   intervalSeconds: 1.4, // 탄환 생성 간격 (초)
   attackRange: 380, // 발사/추적 정지 기준 중심 거리 (px)
   damageMultiplier: 1, // Enemy 기본 공격력에 곱할 배율

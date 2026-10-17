@@ -2,8 +2,8 @@ import { combatConfig } from '../config/combat';
 import { getEnemyWeapon, getPlayerWeapon } from '../config/weapons';
 import type { BulletConfig, SwordConfig, WeaponConfig, WeaponKind } from '../config/weapons';
 import type { Enemy } from '../enemies/EnemySystem';
-import { distance, lineIsClear, moveBody } from '../world/geometry';
-import type { CollisionWorld, Point } from '../world/geometry';
+import { distance, isInViewport, lineIsClear, moveBody } from '../world/geometry';
+import type { CollisionWorld, Point, Viewport } from '../world/geometry';
 import { bladeHitsBody, obstacleBulletHit } from './hitDetection';
 import { segmentRoundedRectangleHit } from '../world/intersections';
 import { clearAttackLine, effectiveAttackRange, swordSweep, validateWeapon } from './weaponRules';
@@ -44,7 +44,7 @@ export class CombatSystem {
     this.playerWeapon = playerWeapon;
   }
 
-  update(deltaSeconds: number, player: Combatant, enemies: readonly Enemy[], world: CollisionWorld): void {
+  update(deltaSeconds: number, player: Combatant, enemies: readonly Enemy[], world: CollisionWorld, viewport: Viewport): void {
     assertNonNegative('combat.deltaSeconds', deltaSeconds);
     const actors: Combatant[] = [player, ...enemies];
     const alive = actors.filter((actor) => actor.hp > 0);
@@ -65,12 +65,14 @@ export class CombatSystem {
 
     if (player.hp > 0) {
       const weapon = getPlayerWeapon(this.playerWeapon);
-      const nearest = this.nearestTarget(player, enemies.filter((enemy) => enemy.hp > 0), weapon.attackRange);
+      const nearest = this.nearestTarget(player, enemies.filter((enemy) => enemy.hp > 0
+        && (weapon.kind !== 'bullet' || isInViewport(enemy, enemy.size, viewport))), weapon.attackRange);
       if (weapon.kind === 'sword' || nearest) this.tryAttack(player, weapon, nearest);
     }
     for (const enemy of enemies) {
       const weapon = getEnemyWeapon(enemy.kind);
       if (enemy.hp > 0 && player.hp > 0 && enemy.state === 'attack'
+        && (weapon.kind !== 'bullet' || isInViewport(enemy, enemy.size, viewport))
         && distance(enemy, player) <= effectiveAttackRange(weapon, player.size)
         && clearAttackLine(enemy, player, weapon, world)) {
         this.tryAttack(enemy, weapon, player);

@@ -1,6 +1,6 @@
 import { enemyConfig } from '../config/enemies';
 import { navigationConfig } from '../config/navigation';
-import { canOccupy, clamp, distance, lineIsClear, moveBody } from '../world/geometry';
+import { canOccupy, clamp, distance, isInViewport, lineIsClear, moveBody } from '../world/geometry';
 import type { Body, CollisionWorld, Point, Viewport } from '../world/geometry';
 import { NavigationGrid } from './NavigationGrid';
 import { getEnemyWeapon } from '../config/weapons';
@@ -93,6 +93,7 @@ export class EnemySystem {
         path: [], repathAt: this.elapsedSeconds, blockedSeconds: 0, outOfRangeSeconds: 0,
       };
       this.resetPatrol(enemy);
+      if (enemyConfig.chase.alwaysChasePlayer) enemy.state = 'chase';
       this.enemies.push(enemy);
       created++;
     }
@@ -136,18 +137,27 @@ export class EnemySystem {
     for (const enemy of this.enemies) {
       if (enemy.hp <= 0) continue;
       const length = distance(enemy, player);
-      if ((enemy.state === 'idle' || enemy.state === 'patrol') && length <= enemyConfig.chase.detectionRadius) {
+      if ((enemy.state === 'idle' || enemy.state === 'patrol')
+        && (enemyConfig.chase.alwaysChasePlayer || length <= enemyConfig.chase.detectionRadius)) {
         enemy.state = 'chase';
         enemy.path = [];
         enemy.repathAt = this.elapsedSeconds;
         awarenessChanged = true;
-      } else if ((enemy.state === 'chase' || enemy.state === 'wait' || enemy.state === 'attack') && length > enemyConfig.chase.releaseRadius) {
+      } else if (!enemyConfig.chase.alwaysChasePlayer
+        && (enemy.state === 'chase' || enemy.state === 'wait' || enemy.state === 'attack') && length > enemyConfig.chase.releaseRadius) {
         this.resetPatrol(enemy);
         awarenessChanged = true;
       }
       // Idle/patrolling actors outside detection do not need per-frame firing LOS scans.
       if (enemy.state === 'idle' || enemy.state === 'patrol') continue;
       const weapon = getEnemyWeapon(enemy.kind);
+      if (weapon.kind === 'bullet' && !isInViewport(enemy, enemy.size, viewport)) {
+        if (enemy.state !== 'chase' || enemy.slot) awarenessChanged = true;
+        enemy.state = 'chase';
+        enemy.slot = undefined;
+        enemy.outOfRangeSeconds = 0;
+        continue;
+      }
       const range = effectiveAttackRange(weapon, player.size);
       const clearShot = length <= range + enemyConfig.chase.resumeDistance && clearAttackLine(enemy, player, weapon, this.world);
       if ((enemy.state === 'chase' || enemy.state === 'wait') && length <= range && clearShot) {
@@ -168,7 +178,7 @@ export class EnemySystem {
     }
     this.assignmentSeconds -= deltaSeconds;
     if (this.assignmentSeconds <= 0 || awarenessChanged) {
-      this.assignSlots(player);
+      this.assignSlots(player, viewport);
       this.assignmentSeconds = enemyConfig.chase.assignmentIntervalSeconds;
     }
 
@@ -176,6 +186,12 @@ export class EnemySystem {
       if (enemy.hp <= 0 || enemy.state === 'attack' || enemy.attackLockSeconds > 0) continue;
       const blockers = [player, ...this.enemies.filter((other) => other !== enemy)];
       if (enemy.state === 'chase' || enemy.state === 'wait') {
+        if (this.needsDirectApproach(enemy, player, viewport)) {
+          enemy.state = 'chase';
+          enemy.slot = undefined;
+          this.moveToward(enemy, this.approachTarget(enemy, player, viewport), enemyConfig.chase.speed, deltaSeconds, blockers);
+          continue;
+        }
         if (!enemy.slot) { enemy.state = 'wait'; continue; }
         const target = this.slotPosition(enemy.slot, player, enemy.kind);
         const remaining = distance(enemy, target);
@@ -210,6 +226,26 @@ export class EnemySystem {
       + ring * (enemyConfig.size * 2 + enemyConfig.chase.ringGap);
   }
 
+  private needsDirectApproach(enemy: Enemy, player: Body, viewport: Viewport): boolean {
+    return (getEnemyWeapon(enemy.kind).kind === 'bullet' && !isInViewport(enemy, enemy.size, viewport))
+      || distance(enemy, player) > this.ringRadius(enemyConfig.chase.maximumRings - 1, player, enemy.kind) + enemy.size;
+  }
+
+  private approachTarget(enemy: Enemy, player: Body, viewport: Viewport): Point {
+    const half = enemy.size / 2 + navigationConfig.clearance;
+    if (getEnemyWeapon(enemy.kind).kind === 'bullet' && !isInViewport(enemy, enemy.size, viewport)) {
+      // Aim inside the camera, rather than stopping at an offscreen weapon-range ring.
+      return {
+        x: clamp(clamp(enemy.x, viewport.x + half, viewport.x + viewport.width - half), half, this.world.width - half),
+        y: clamp(clamp(enemy.y, viewport.y + half, viewport.y + viewport.height - half), half, this.world.height - half),
+      };
+    }
+    // A reachable outer-ring waypoint avoids asking A* to enter the Player's occupied cell.
+    const length = distance(enemy, player);
+    const radius = this.ringRadius(enemyConfig.chase.maximumRings - 1, player, enemy.kind);
+    return { x: player.x + (enemy.x - player.x) / length * radius, y: player.y + (enemy.y - player.y) / length * radius };
+  }
+
   private ringCapacity(ring: number, player: Body, kind: EnemyKind): number {
     // Chord distance, rather than arc length, keeps square enemies separated.
     // Leave a full enemy-width passage, so an outer waiter cannot seal an inner reservation.
@@ -224,17 +260,24 @@ export class EnemySystem {
     return { x: player.x + Math.cos(angle) * radius, y: player.y + Math.sin(angle) * radius };
   }
 
-  private assignSlots(player: Body): void {
-    const followers = this.enemies.filter((enemy) => enemy.state === 'chase' || enemy.state === 'wait');
+  private assignSlots(player: Body, viewport: Viewport): void {
+    const followers = this.enemies.filter((enemy) => (enemy.state === 'chase' || enemy.state === 'wait')
+      && !this.needsDirectApproach(enemy, player, viewport));
     const reserved = new Map<string, Enemy>();
     const key = (slot: RingSlot, enemy: Enemy) => `${enemy.kind}:${slot.ring}:${slot.index}`;
     const usable = (slot: RingSlot, enemy: Enemy) => {
       const target = this.slotPosition(slot, player, enemy.kind);
+      if (getEnemyWeapon(enemy.kind).kind === 'bullet' && !isInViewport(target, enemy.size, viewport)) return false;
       const attackers = this.enemies.filter((other) => other !== enemy && other.state === 'attack');
+      const needsRouteCheck = enemy.blockedSeconds >= navigationConfig.stuckRepathSeconds
+        || (enemy.slot !== undefined && slot.ring < enemy.slot.ring);
+      const blockers = needsRouteCheck ? [player, ...this.enemies.filter(other => other !== enemy)] : [];
       return canOccupy(target, enemyConfig.size + navigationConfig.clearance * 2, this.world, attackers)
         && clearAttackLine(target, player, getEnemyWeapon(enemy.kind), this.world)
         && ![...reserved.values()].some((other) => other !== enemy && other.slot
-          && distance(target, this.slotPosition(other.slot, player, other.kind)) < enemyConfig.size * Math.SQRT2 + enemyConfig.chase.ringGap);
+          && distance(target, this.slotPosition(other.slot, player, other.kind)) < enemyConfig.size * Math.SQRT2 + enemyConfig.chase.ringGap)
+        && (!needsRouteCheck || lineIsClear(enemy, target, enemy.size, this.world, blockers)
+          || this.navigation.findPath(enemy, target, blockers).length > 0);
     };
     // Preserve reservations across ticks; never push an existing waiter to make room.
     for (const enemy of followers) {
@@ -338,6 +381,9 @@ export class EnemySystem {
     }
     enemy.x = best.x;
     enemy.y = best.y;
-    enemy.blockedSeconds = moved < travel * navigationConfig.stuckTravelRatio ? enemy.blockedSeconds + deltaSeconds : 0;
+    const progress = length - distance(best, goal);
+    // Sideways oscillation is also blocked progress, even if the body moves each frame.
+    enemy.blockedSeconds = moved < travel * navigationConfig.stuckTravelRatio
+      || progress < travel * navigationConfig.stuckTravelRatio ? enemy.blockedSeconds + deltaSeconds : 0;
   }
 }

@@ -3,18 +3,18 @@ import type { EnemyExperienceCategory } from './experience';
 export const enemyConfig = {
   size: 32, // 두 Enemy 타입에 공통인 사각형 한 변 길이 (px)
   colors: {
-    horizontal: 0xf43f5e, // 좌우 순찰 Enemy 색상 (0xRRGGBB)
-    circular: 0x38bdf8, // 원형 순찰 Enemy 색상 (0xRRGGBB)
+    horizontal: 0xf43f5e, // Enemy 1: 근접 검 타입 색상 (0xRRGGBB, Patrol 활성 시 좌우 순찰)
+    circular: 0x38bdf8, // Enemy 2: 원거리 탄환 타입 색상 (0xRRGGBB, Patrol 활성 시 원형 순찰)
   },
   stats: {
     horizontal: {
-      maxHp: 72, // 좌우 순찰 Enemy 최대/시작 HP
-      attackDamage: 12, // 좌우 순찰 Enemy 기본 공격력
+      maxHp: 72, // Enemy 1 (근접 검) 최대/시작 HP
+      attackDamage: 12, // Enemy 1 (근접 검) 기본 공격력
       experienceCategory: 'normal1' as const satisfies EnemyExperienceCategory, // 경험치 보상 분류 (이동 타입과 별개)
     },
     circular: {
-      maxHp: 48, // 원형 순찰 Enemy 최대/시작 HP
-      attackDamage: 8, // 원형 순찰 Enemy 기본 공격력
+      maxHp: 48, // Enemy 2 (원거리 탄환) 최대/시작 HP
+      attackDamage: 8, // Enemy 2 (원거리 탄환) 기본 공격력
       experienceCategory: 'normal2' as const satisfies EnemyExperienceCategory, // 경험치 보상 분류 (experience.ts에서 보상 조정)
     },
   },
@@ -43,6 +43,7 @@ export const enemyConfig = {
     },
   },
   chase: {
+    alwaysChasePlayer: true, // true: 스폰 즉시 지속 추적, false: 감지 전 좌우/원형 Patrol 사용
     speed: 165, // 추적 이동 속도 (px/초)
     detectionRadius: 620, // Player를 발견하고 추적을 시작할 중심 거리 (px)
     releaseRadius: 850, // 추적을 해제할 중심 거리 (px, 감지 거리보다 크게 설정)

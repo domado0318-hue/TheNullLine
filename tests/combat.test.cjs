@@ -25,11 +25,16 @@ function enemy(id, x, y, kind = 'horizontal') {
 }
 function run(combat, body, enemies, seconds, scenery = world(), callback) {
   for (let i = 0; i < Math.round(seconds * 60); i++) {
-    combat.update(1 / 60, body, enemies, scenery);
+    combat.update(1 / 60, body, enemies, scenery, viewport(body));
     if (callback) callback(i);
   }
 }
 const viewport = (body) => ({ x: body.x - 640, y: body.y - 360, width: 1280, height: 720 });
+function withoutPlayerBullets(run) {
+  const originalRange = playerBulletConfig.attackRange;
+  playerBulletConfig.attackRange = 0;
+  try { return run(); } finally { playerBulletConfig.attackRange = originalRange; }
+}
 
 test('Player sword hits contact and orbit distances only once per swing on its configured interval', () => {
   for (const offset of [40, playerSwordConfig.orbitRadius]) {
@@ -46,12 +51,14 @@ test('Player sword hits contact and orbit distances only once per swing on its c
   }
 });
 
-test('Player bullets target the closest enemy and respect the spawn interval', () => {
+test('Player bullets wait for visible enemies, target the closest visible one, and respect the interval', () => {
   const body = player();
-  const closest = enemy(1, body.x + 300, body.y);
-  const farther = enemy(2, body.x, body.y + 500);
+  const closest = enemy(1, body.x + 550, body.y);
+  const farther = enemy(2, body.x, body.y + 400);
   const combat = new CombatSystem('bullet');
-  combat.update(1 / 60, body, [farther, closest], world());
+  combat.update(1 / 60, body, [farther], world(), viewport(body));
+  assert.equal(combat.bullets.length, 0, 'A closer offscreen enemy cannot trigger fire');
+  combat.update(1 / 60, body, [farther, closest], world(), viewport(body));
   assert.equal(combat.bullets.length, 1);
   assert(combat.bullets[0].velocityX > 0);
   assert.equal(combat.bullets[0].velocityY, 0);
@@ -59,13 +66,84 @@ test('Player bullets target the closest enemy and respect the spawn interval', (
   run(combat, body, [farther, closest], 0.2);
   assert.equal(combat.bullets.length, 1);
   assert.equal(body.attackLockSeconds, 0);
+  body.x -= 600; // Camera follows Player away from the target after the shot was emitted.
+  run(combat, body, [farther, closest], 1);
+  assert(closest.hp < closest.maxHp, 'Existing projectiles keep travelling after the target leaves view');
+  assert.equal(combat.bullets.length, 0, 'No replacement shot is emitted towards an offscreen target');
+});
+
+test('Player bullets count positive body overlap with each viewport edge as visible, but not mere contact', () => {
+  const body = player();
+  const camera = viewport(body);
+  const half = enemyConfig.size / 2;
+  const positions = [
+    { x: camera.x - half, y: body.y, dx: 0.01, dy: 0 },
+    { x: camera.x + camera.width + half, y: body.y, dx: -0.01, dy: 0 },
+    { x: body.x, y: camera.y - half, dx: 0, dy: 0.01 },
+    { x: body.x, y: camera.y + camera.height + half, dx: 0, dy: -0.01 },
+  ];
+  for (const position of positions) {
+    const target = enemy(1, position.x, position.y);
+    const combat = new CombatSystem('bullet');
+    combat.update(1 / 60, body, [target], world(), camera);
+    assert.equal(combat.bullets.length, 0);
+    target.x += position.dx;
+    target.y += position.dy;
+    combat.update(1 / 60, body, [target], world(), camera);
+    assert.equal(combat.bullets.length, 1);
+  }
+});
+
+test('Ranged Enemy inside weapon range but outside the camera approaches until visible before firing', () => withoutPlayerBullets(() => {
+  const body = player();
+  const camera = { x: 1400, y: 1400, width: 200, height: 200 };
+  const actor = enemy(1, 1700, 1500, 'circular');
+  actor.state = 'attack';
+  const system = new EnemySystem(world());
+  system.enemies.push(actor);
+  const combat = new CombatSystem('bullet');
+  combat.update(0.2, body, [actor], world(), camera);
+  assert.equal(combat.bullets.length, 0, 'Combat also guards stale/offscreen Attack states');
+  actor.state = 'chase';
+  system.update(1 / 60, body, camera);
+  assert.equal(actor.state, 'chase');
+  assert(actor.x < 1700, 'Offscreen ranged Enemy cannot wait at an offscreen firing slot');
+  let sawAttack = false;
+  for (let frame = 0; frame < 120; frame++) {
+    system.update(1 / 60, body, camera);
+    combat.update(1 / 60, body, system.enemies, world(), camera);
+    if (actor.x - actor.size / 2 >= camera.x + camera.width) assert.equal(actor.state, 'chase');
+    if (actor.state === 'attack') sawAttack = true;
+  }
+  assert(sawAttack);
+  assert(body.hp < body.maxHp, 'Enemy must fire and damage Player after entering view');
+  body.x = 1300;
+  const panned = { x: 1200, y: 1400, width: 200, height: 200 };
+  const freshCombat = new CombatSystem('bullet');
+  system.update(1 / 60, body, panned);
+  assert.equal(actor.state, 'chase', 'Losing screen visibility restarts approach');
+  freshCombat.update(0.3, body, system.enemies, world(), panned);
+  assert.equal(freshCombat.bullets.length, 0);
+}));
+
+test('Default sword tuning leaves a usable distance where Player hits and melee Enemy cannot retaliate', () => {
+  const body = player();
+  const safeDistance = getEnemyWeapon('horizontal').attackRange + playerConfig.size / 2;
+  const target = enemy(1, body.x + safeDistance, body.y);
+  target.hp = target.maxHp = 1000;
+  target.state = 'attack';
+  const combat = new CombatSystem('sword');
+  run(combat, body, [target], 0.45);
+  assert(target.hp < target.maxHp, 'Player sword must reach beyond Enemy range with a half-player-width margin');
+  assert.equal(body.hp, body.maxHp);
+  assert(!combat.swords.some(sword => sword.ownerId === target.id));
 });
 
 test('Continuous bullet collision hits an enemy even during a long frame', () => {
   const body = player(100, 500);
   const target = enemy(1, 700, 500);
   const combat = new CombatSystem('bullet');
-  combat.update(1, body, [target], world());
+  combat.update(1, body, [target], world(), viewport(body));
   assert.equal(target.hp, target.maxHp - body.attackDamage);
   assert.equal(combat.bullets.length, 0);
 });
@@ -76,7 +154,7 @@ test('Bullets hit the first rectangle/circle obstacle before a target', () => {
     const target = enemy(1, 700, 500);
     const scenery = { ...world(), obstacles: [{ x: 400, y: 500, size: 100, shape }] };
     const combat = new CombatSystem('bullet');
-    combat.update(1, body, [target], scenery);
+    combat.update(1, body, [target], scenery, viewport(body));
     assert.equal(target.hp, target.maxHp);
     assert.equal(combat.bullets.length, 0);
   }
@@ -84,6 +162,7 @@ test('Bullets hit the first rectangle/circle obstacle before a target', () => {
 
 test('Enemy bullets pass through friendly enemies and damage only the Player', () => {
   const body = player(700, 500);
+  body.attackDamage = 0; // Isolate Enemy projectiles from the longer Player sword.
   const source = enemy(1, 400, 500, 'circular');
   source.state = 'attack';
   const friend = enemy(2, 550, 500);
@@ -94,13 +173,13 @@ test('Enemy bullets pass through friendly enemies and damage only the Player', (
 });
 
 test('Enemy swords skip friendly targets, damage Player, and lock only the attacker', () => {
-  const body = player(520, 500);
+  const body = player(400 + getEnemyWeapon('horizontal').attackRange - 5, 500);
   body.attackDamage = 0;
   const source = enemy(1, 400, 500);
   source.state = 'attack';
-  const friend = enemy(2, 455, 500);
+  const friend = enemy(2, 400, 560);
   const combat = new CombatSystem('bullet');
-  combat.update(1 / 60, body, [source, friend], world());
+  combat.update(1 / 60, body, [source, friend], world(), viewport(body));
   assert.equal(friend.hp, friend.maxHp);
   assert.equal(body.hp, body.maxHp - source.attackDamage);
   assert(source.attackLockSeconds > 0);
@@ -149,7 +228,7 @@ test('Enemy cannot stay forever without attacking in the hysteresis band after P
       const combat = new CombatSystem('bullet');
       for (let frame = 0; frame < 180; frame++) {
         system.update(1 / 60, body, viewport(body));
-        combat.update(1 / 60, body, system.enemies, world());
+        combat.update(1 / 60, body, system.enemies, world(), viewport(body));
       }
       assert(distance(actor, before) > 1, `${kind} must resume approach`);
       assert(body.hp < body.maxHp, `${kind} must eventually deal actual damage`);
@@ -170,7 +249,7 @@ test('Ranged Enemy abandons a slot whose center ray is clear but bullet is block
     const combat = new CombatSystem('bullet');
     for (let frame = 0; frame < 180; frame++) {
       system.update(1 / 60, body, viewport(body));
-      combat.update(1 / 60, body, system.enemies, scenery);
+      combat.update(1 / 60, body, system.enemies, scenery, viewport(body));
     }
     assert(distance(actor, { x: 1125, y: 1500 }) > 1);
     assert(body.hp < body.maxHp, 'A reachable firing slot must produce actual damage');
@@ -192,7 +271,7 @@ test('Increasing sword attackRange alone cannot leave Enemy swinging beyond phys
     const combat = new CombatSystem('bullet');
     for (let frame = 0; frame < 180; frame++) {
       system.update(1 / 60, body, viewport(body));
-      combat.update(1 / 60, body, system.enemies, world());
+      combat.update(1 / 60, body, system.enemies, world(), viewport(body));
     }
     assert(body.hp < body.maxHp);
     assert(actor.x > 1300, 'AI must approach to actual sword reach');
@@ -206,7 +285,7 @@ test('Round bullets miss square corners outside their radius and include exact c
   const combat = new CombatSystem('sword');
   const weapon = { ...playerBulletConfig, speed: 2, radius: 5, lifetimeSeconds: 2, maximumTravelDistance: 10 };
   combat.bullets.push({ id: 900, ownerId: body.id, faction: 'player', damage: 24, x: 78, y: 120, velocityX: 2, velocityY: 0, age: 0, travelled: 0, weapon });
-  combat.update(1, body, [target], world());
+  combat.update(1, body, [target], world(), viewport(body));
   assert.equal(target.hp, target.maxHp);
   assert.equal(combat.bullets.length, 1);
   const obstacle = { shape: 'rectangle', x: 100, y: 100, size: 32 };
@@ -222,7 +301,7 @@ test('Enemy in an outer waiting ring does not attack outside its range', () => {
   const actor = enemy(1, 2000, 1500);
   actor.state = 'wait';
   const combat = new CombatSystem('bullet');
-  combat.update(1 / 60, body, [actor], world());
+  combat.update(1 / 60, body, [actor], world(), viewport(body));
   assert(!combat.swords.some((sword) => sword.ownerId === actor.id));
   assert(!combat.bullets.some((bullet) => bullet.ownerId === actor.id));
 });
@@ -253,7 +332,7 @@ test('Multiple simultaneous enemy hits respect Player invulnerability', () => {
       velocityX: enemyBulletConfig.speed, velocityY: 0, age: 0, travelled: 0, weapon: enemyBulletConfig,
     });
   }
-  combat.update(0.2, body, [], world());
+  combat.update(0.2, body, [], world(), viewport(body));
   assert.equal(body.hp, body.maxHp - 8);
   assert.equal(body.invulnerableSeconds, combatConfig.invulnerabilitySeconds.player);
   assert.equal(combat.bullets.length, 0);
@@ -269,7 +348,7 @@ test('Defeated enemies are removed, their sword ends, and spawn population recov
   combat.swords.push({ id: 500, ownerId: dead.id, faction: 'enemy', damage: 100, age: 0, angle: 0, x: dead.x, y: dead.y, weapon: getEnemyWeapon('horizontal'), hitIds: new Set() });
   system.removeDefeated();
   assert.equal(system.enemies.length, 9);
-  combat.update(1 / 60, body, system.enemies, world());
+  combat.update(1 / 60, body, system.enemies, world(), viewport(body));
   assert(!combat.swords.some((sword) => sword.ownerId === dead.id));
   system.update(3, body, viewport(body));
   assert(system.enemies.length >= 10 && system.enemies.length <= 11);
@@ -283,7 +362,7 @@ test('Automatic attacks keep Player movement at its configured speed', () => {
     const combat = new CombatSystem(kind);
     for (let i = 0; i < 60; i++) {
       moveBody(body, playerConfig.movementSpeed / 60, 0, world(), [target]);
-      combat.update(1 / 60, body, [target], world());
+      combat.update(1 / 60, body, [target], world(), viewport(body));
     }
     assert(Math.abs(body.x - 1300) < 1e-8);
     assert.equal(body.attackLockSeconds, 0);
@@ -295,9 +374,9 @@ test('Health cannot become negative and expired bullets are removed', () => {
   body.attackDamage = 10000;
   const target = enemy(1, body.x + 100, body.y);
   const combat = new CombatSystem('bullet');
-  combat.update(1, body, [target], world());
+  combat.update(1, body, [target], world(), viewport(body));
   assert.equal(target.hp, 0);
-  combat.update(10, body, [], world());
+  combat.update(10, body, [], world(), viewport(body));
   assert.equal(combat.bullets.length, 0);
 });
 
@@ -317,7 +396,7 @@ test('Movement, crowd AI, combat, knockback, deaths and respawns remain collisio
       const angle = i / 100;
       moveBody(body, Math.cos(angle) * playerConfig.movementSpeed / 30, Math.sin(angle) * playerConfig.movementSpeed / 30, scenery, system.enemies);
       system.update(1 / 30, body, viewport(body));
-      combat.update(1 / 30, body, system.enemies, scenery);
+      combat.update(1 / 30, body, system.enemies, scenery, viewport(body));
       if (body.hp < body.maxHp || system.enemies.some((actor) => actor.hp < actor.maxHp)) observedDamage = true;
       system.removeDefeated();
       assert(system.enemies.length <= system.maximumCount);

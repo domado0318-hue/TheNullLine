@@ -38,7 +38,7 @@ test('Invalid loop steps are rejected before enemy, weapon, movement, world or s
       enemyConfig.spawn.intervalSeconds = previous;
       previous = playerSwordConfig.maximumHitAngleStep;
       playerSwordConfig.maximumHitAngleStep = bad;
-      assert.throws(()=>new CombatSystem('sword').update(1/60,player,[],world), /maximumHitAngleStep/);
+      assert.throws(()=>new CombatSystem('sword').update(1/60,player,[],world,{x:860,y:1140,width:1280,height:720}), /maximumHitAngleStep/);
       playerSwordConfig.maximumHitAngleStep = previous;
       previous = navigationConfig.collisionStep;
       navigationConfig.collisionStep = bad;

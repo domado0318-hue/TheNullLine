@@ -11,6 +11,6 @@ export const navigationConfig = {
   stuckRepathSeconds: 0.35, // 막힘이 이어질 때 경로 재탐색을 허용할 시간 (초)
   minimumForwardTravelRatio: 0.7, // 요청 이동량 대비 우회 방향을 탐색할 진행 비율 (0~1)
   progressScoreWeight: 0.4, // 우회 점수에서 목표에 가까워진 거리에 적용할 가중치
-  stuckTravelRatio: 0.5, // 요청 이동량 대비 막힘으로 판단할 실제 이동 비율 (0~1)
+  stuckTravelRatio: 0.5, // 요청 이동량 대비 실제 이동량/목표 진행량의 막힘 판단 비율 (0~1)
   avoidanceAngles: [Math.PI / 4, -Math.PI / 4, Math.PI / 2, -Math.PI / 2], // 우회 후보 각도 (rad, 진행 방향 기준)
 };

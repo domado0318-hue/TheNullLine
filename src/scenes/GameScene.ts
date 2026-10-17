@@ -66,8 +66,9 @@ export class GameScene extends Phaser.Scene {
     // Small steps retain frame-independent speed and prevent collision tunnelling.
     advanceSimulation(delta, (step) => {
       this.player.update(step, this.world, this.enemySystem.enemies);
-      this.enemySystem.update(step, this.player.body, this.getViewport());
-      combat.update(step, this.player.body, this.enemySystem.enemies, this.world);
+      const viewport = this.getViewport();
+      this.enemySystem.update(step, this.player.body, viewport);
+      combat.update(step, this.player.body, this.enemySystem.enemies, this.world, viewport);
       this.experience.dropFromDefeated(this.enemySystem.removeDefeated());
       if (this.player.body.hp > 0) this.experience.update(step, this.player.body);
       return this.player.body.hp > 0;

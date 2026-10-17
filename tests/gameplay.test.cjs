@@ -23,6 +23,11 @@ const { worldConfig } = load('src/config/world.ts');
 function seededRandom(seed) {
   return () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
 }
+function withPatrol(run) {
+  const previous = enemyConfig.chase.alwaysChasePlayer;
+  enemyConfig.chase.alwaysChasePlayer = false;
+  try { return run(); } finally { enemyConfig.chase.alwaysChasePlayer = previous; }
+}
 const player = (x = 1500, y = 1500) => ({ id: 0, x, y, size: playerConfig.size });
 const viewport = (body) => ({ x: body.x - 640, y: body.y - 360, width: 1280, height: 720 });
 const emptyWorld = () => ({ width: 3000, height: 3000, obstacles: [] });
@@ -90,6 +95,7 @@ test('initial spawns stay outside the camera and avoid all actors and obstacles 
     const { system, body } = fixture(seed + 100, world);
     assert.equal(system.enemies.length, 10);
     assert.equal(system.enemies.filter((enemy) => enemy.kind === 'circular').length, 5);
+    assert(system.enemies.every(enemy => enemy.state === 'chase'), 'Default spawns start chasing immediately');
     const camera = viewport(body);
     for (const enemy of system.enemies) {
       const margin = enemy.size / 2 + enemyConfig.spawn.cameraMargin;
@@ -97,6 +103,23 @@ test('initial spawns stay outside the camera and avoid all actors and obstacles 
     }
     checkCollisions(system, body);
   }
+});
+
+test('Default enemies pursue beyond detection and release radii instead of returning to patrol', () => {
+  const { system, body } = fixture(701);
+  system.enemies.splice(1);
+  const actor = system.enemies[0];
+  Object.assign(actor, { x: 400, y: 400, path: [], slot: undefined });
+  assert(distance(actor, body) > enemyConfig.chase.releaseRadius);
+  const before = distance(actor, body);
+  system.update(1 / 60, body, viewport(body));
+  assert.equal(actor.state, 'chase');
+  assert(distance(actor, body) < before);
+  Object.assign(body, { x: 2700, y: 2700 });
+  const afterRetreat = distance(actor, body);
+  system.update(1 / 60, body, viewport(body));
+  assert.equal(actor.state, 'chase');
+  assert(distance(actor, body) < afterRetreat);
 });
 
 test('spawn interval, wave size, population cap, larger worlds and unavailable spawn space', () => {
@@ -166,7 +189,7 @@ test('Analytic visibility catches short circle intersections between old sample 
   }
 });
 
-test('Far idle enemies do not perform per-frame shot visibility scans in an expanded world', () => {
+test('Patrol-mode far idle enemies do not perform per-frame shot visibility scans in an expanded world', () => withPatrol(() => {
   const random = seededRandom(993);
   const obstacles = createObstacleLayout(12000, 12000, 48, random);
   let reads = 0;
@@ -178,9 +201,9 @@ test('Far idle enemies do not perform per-frame shot visibility scans in an expa
   reads = 0;
   system.update(1 / 60, body, viewport(body));
   assert.equal(reads, 0, 'No scenery/LOS scans are needed for distant stationary idle actors');
-});
+}));
 
-test('horizontal and circular patrol alternate Idle / Move and retain their paths', () => {
+test('Opt-in horizontal and circular patrol alternate Idle / Move and retain their paths', () => withPatrol(() => {
   const { system, body } = fixture(11, emptyWorld(), player(2700, 2700));
   system.enemies.splice(2);
   const horizontal = system.enemies[0];
@@ -202,9 +225,9 @@ test('horizontal and circular patrol alternate Idle / Move and retain their path
   const last = horizontal.x;
   system.update(0.05, body, viewport(body));
   assert.equal(horizontal.x, last);
-});
+}));
 
-test('Chase detection / release and attack / resume use separate thresholds', () => {
+test('Patrol mode uses separate detection / release and attack / resume thresholds', () => withPatrol(() => {
   const { system, body } = fixture();
   system.enemies.splice(1);
   const enemy = system.enemies[0];
@@ -231,7 +254,7 @@ test('Chase detection / release and attack / resume use separate thresholds', ()
   body.x += 40;
   system.update(0.01, body, viewport(body));
   assert.equal(enemy.state, 'chase');
-});
+}));
 
 test('A* chooses a collision-free detour around a wall and another enemy', () => {
   const world = { ...emptyWorld(), obstacles: [{ shape: 'rectangle', x: 1500, y: 1500, size: 350 }] };

@@ -12,6 +12,13 @@ export interface CollisionWorld extends WorldSize { obstacles: readonly Obstacle
 export const distance = (a: Point, b: Point): number => Math.hypot(a.x - b.x, a.y - b.y);
 export const clamp = (value: number, min: number, max: number): number => Math.max(min, Math.min(max, value));
 
+// A body is on screen only when a positive area overlaps the actual camera view.
+export function isInViewport(point: Point, size: number, viewport: Viewport): boolean {
+  const half = size / 2;
+  return point.x + half > viewport.x && point.x - half < viewport.x + viewport.width
+    && point.y + half > viewport.y && point.y - half < viewport.y + viewport.height;
+}
+
 export function overlapsSquare(a: Point, aSize: number, b: Point, bSize: number): boolean {
   const extent = (aSize + bSize) / 2;
   return Math.abs(a.x - b.x) < extent && Math.abs(a.y - b.y) < extent;
