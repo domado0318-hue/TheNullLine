@@ -51,21 +51,94 @@ npm run preview
 - 카메라는 플레이어를 화면 중앙에서 추적합니다. 범위에는 외곽 벽까지 포함되며, 가장자리에서는 카메라가 멈추므로 플레이어가 화면 중앙에서 벗어날 수 있습니다.
 - 시작할 때 바닥 내부에 주황색 사각형과 보라색 원 장애물을 무작위 배치합니다. 크기(사각형 한 변 또는 원 지름)는 플레이어의 0.8~2.5배입니다.
 - 장애물은 3000×3000에서 8개이며 월드 면적에 비례해 개수가 늘어납니다. 서로 겹치지 않으며 장애물 사이와 벽 사이에 최소 76픽셀 통로를 확보합니다. 플레이어 시작 위치 주변도 비워 둡니다.
-- 장애물은 배치와 표시만 구현하며, 플레이어와 장애물 사이의 충돌 처리는 아직 없습니다.
-- 외부 이미지, 전투, 물리 엔진 설정은 포함하지 않습니다.
+- Player는 장애물과 Enemy를 통과하지 않습니다. Enemy 역시 바닥·장애물·Player·다른 Enemy와 겹치지 않도록 이동하며, 서로를 밀어내지 않습니다.
+- Enemy는 같은 크기의 32×32 사각형 두 종류입니다. 분홍색은 좌우 순찰, 하늘색은 원형 순찰을 하며 Idle/Move를 반복합니다.
+- 플레이어가 620픽셀 안으로 들어오면 추적하고, 850픽셀 밖으로 나가면 순찰로 복귀합니다. 추적 속도는 초당 165픽셀, 순찰 속도는 초당 75픽셀입니다.
+- 초기 Enemy는 10마리이며 3초마다 1~2마리씩 추가되고 최대 20마리로 제한됩니다. 초기 수·추가 수·최대 수는 월드 면적에 비례합니다. 스폰 위치는 여유 폭을 포함해 카메라 바깥이면서 바닥 내부인 곳으로 한정합니다. 안전한 공간이 없으면 해당 생성은 보류합니다.
+- 추적은 A* 경로 탐색과 이동 방향 보정으로 장애물·다른 Enemy를 우회합니다. 플레이어 주변의 안쪽 원부터 자리를 예약하고, 자리가 없으면 다음 원에서 대기합니다. 원 사이와 자리 사이에는 다른 Enemy가 통과할 여유를 남깁니다.
+- Enemy는 실제 무기 도달 범위와 시야가 확보되면 정지해 공격합니다. 사거리보다 24픽셀 더 멀어지면 즉시 재추적하고, 그 사이 거리에서는 최대 0.2초 대기 후 재접근합니다. 다른 Enemy 때문에 접근할 자리가 없으면 바깥 원에서 대기하며, 자리 예약과 거리 차이로 포위 시 떨림을 줄입니다.
+- 게임 시작 시 검/탄환 버튼으로 무기를 선택합니다. 선택 전에는 스폰·이동·전투 시간이 흐르지 않습니다. 자동 공격 중에도 WASD 이동을 계속할 수 있습니다.
+- 검은 기본 0.5초마다 0.5초 동안 한 바퀴 회전하고, 한 회전에서 각 Enemy를 한 번씩 타격합니다. 탄환은 가장 가까운 살아 있는 Enemy를 향해 기본 0.35초마다 발사합니다.
+- Enemy 1(분홍색)은 검, Enemy 2(하늘색)는 탄환을 사용합니다. Player↔Enemy 공격만 유효하며 아군 무기는 Enemy를 피해 없이 통과합니다. 기존 몸체 충돌은 유지합니다.
+- 개체 상단에 HP 바를 표시하고, 피격 시 빨간색 점멸과 짧은 밀림을 적용합니다. 밀림도 월드·장애물·개체 충돌을 지킵니다. 기본 Player는 HP 120/공격력 24, Enemy 1은 HP 72/공격력 12, Enemy 2는 HP 48/공격력 8입니다.
+- HP 0인 Enemy는 제거되며 기존 생성 주기에 맞춰 다시 충원됩니다. Player가 쓰러지면 정지하고 다시 시작 버튼으로 무기 선택부터 재시작할 수 있습니다.
+- 적을 처치하면 사망 위치에 별 모양 경험치 아이콘이 남습니다. Player 중심 150픽셀 이내에서 가속하며 빨려 들어오고, 20픽셀 이내에 도착하면 한 번만 경험치를 지급합니다. 흡수 중인 아이콘은 장애물을 통과합니다.
+- 좌측 상단에 현재 레벨과 현재/필요 경험치 바를 표시합니다. 레벨은 1부터 시작하며 초과 경험치를 보존하고 한 번에 여러 레벨 상승을 허용합니다. 1~30레벨은 개별 표를 사용하고, 이후에는 마지막 표 값에 레벨당 1.15배를 적용해 올림합니다. `maxLevel`은 표의 마지막 레벨이며 최종 레벨 제한이 아닙니다.
+- 경험치 보상 분류는 이동 타입과 별개입니다. 현재 좌우 순찰 적은 normal1(5 경험치), 원형 순찰 적은 normal2(8 경험치)이며 normal3·elite·boss 보상도 설정에서 준비합니다. 재시작하면 드롭·레벨·경험치가 초기화됩니다.
+- 외부 이미지를 사용하지 않습니다. 게임 개체와 HP 바는 Phaser 기본 그래픽으로, 선택·재시작 메뉴는 게임 캔버스 위에 정렬한 브라우저 기본 버튼으로 표시합니다. 버튼 클릭은 월드 카메라 좌표의 영향을 받지 않습니다.
 
 ```text
 src/
   main.ts               # Phaser 게임 생성과 화면 설정
   style.css             # 브라우저 화면 배치
+  config/
+    game.ts             # 화면, 배경, 시뮬레이션 간격
+    world.ts            # 바닥, 벽, 격자
+    player.ts           # 플레이어 크기, 색상, 속도
+    obstacles.ts        # 장애물 수, 크기 배율, 색상, 통로 여유
+    enemies.ts          # Enemy 표시, 스폰, 순찰, 추적, 대기
+    navigation.ts       # 충돌 단계, 경로 격자, 재탐색, 우회 보정
+    combat.ts           # 무적 시간, 피격 점멸, 밀림
+    weapons.ts          # Player/Enemy 검·탄환의 사거리, 회전, 생성 주기
+    ui.ts               # HP 바, 무기 선택, 다시 시작 화면
+    experience.ts       # 레벨별 필요량, 보상 분류, 흡수와 별 아이콘
+    validate.ts         # 숫자 설정의 유한성, 부호, 정수 제약 검사
+  player/
+    PlayerController.ts # WASD 입력과 충돌을 고려한 이동
+  enemies/
+    EnemySystem.ts      # 스폰, Idle/Patrol/Chase/Wait/Attack, 원형 자리 배정
+    NavigationGrid.ts   # 장애물과 다른 개체를 고려하는 A* 경로 탐색
   scenes/
-    GameScene.ts        # 월드와 장애물 표시, WASD 이동, 월드 경계, 카메라 추적
+    GameScene.ts        # 기능 생성·업데이트·표시와 카메라 연결
+    advanceSimulation.ts # 긴 프레임의 분할 갱신과 단계 값 검증
   world/
     createObstacleLayout.ts # 크기와 간격을 고려한 랜덤 장애물 배치
+    createWorldView.ts   # 격자, 바닥 외부 벽, 장애물 표시
+    geometry.ts         # 공통 도형 판정과 관통 방지 이동
+    intersections.ts    # 선분과 사각형/원/둥근 사각형의 정확한 교차 판정
+  ui/
+    HealthBar.ts        # 개체 상단의 HP 표시
+    GameOverlay.ts      # 캔버스 위치·크기에 맞춘 브라우저 무기 선택/재시작 버튼
+    ExperienceHud.ts    # 화면에 고정된 레벨과 경험치 바
+  combat/
+    types.ts            # HP, 공격력, 진영과 피격 상태
+    CombatSystem.ts     # 자동 공격, 피해, 수명, 밀림
+    hitDetection.ts     # 회전하는 검과 탄환 이동 구간의 타격 판정
+    CombatRenderer.ts   # 검·탄환 기본 도형 표시 및 정리
+    weaponRules.ts      # 실제 무기 도달 범위, 발사 시야, 검 궤적과 설정 검증
+  experience/
+    ExperienceSystem.ts # 경험치 드롭·흡수·레벨 진행
+    ExperienceRenderer.ts # 경험치 별 표시 및 수집 후 정리
+tests/
+  gameplay.test.cjs      # 표시와 독립적인 게임 로직 검증
+  combat.test.cjs        # 진영, 공격 주기, 사거리, 피해, 피격 효과 검증
+  ui.test.cjs            # 메뉴 선택·정렬·이벤트 수명주기 검증
+  experience.test.cjs    # 보상·흡수·레벨 표·HUD·재시작 상태 검증
+  config.test.cjs        # 잘못된 반복 단계 격리 검사와 프레임 분할 검증
 index.html              # 브라우저 진입점
 tsconfig.json           # TypeScript 엄격 모드 설정
 package.json            # 의존성과 실행 스크립트
 package-lock.json       # 설치한 의존성 버전 잠금
 ```
 
-이동 속도는 `GameScene`의 `movementSpeed`에서 조정할 수 있습니다. 다음 기능은 `create()`와 `update()`부터 확장할 수 있습니다.
+## 기획 수치와 기능별 지침
+
+기획자가 조절할 수치는 `src/config/`에서 기능별로 관리합니다. 크기·거리는 px, 속도는 px/초, 시간은 초를 사용하며 배율·면적과 예외 단위는 각 파일 주석에 표시합니다. 기존 Player 이동 속도는 `config/player.ts`의 `movementSpeed`에서 조정합니다. Enemy 감지 거리·정지 여유·재이동 거리·순찰 범위·생성 주기는 `config/enemies.ts`에서 조정합니다.
+
+HP/기본 공격력은 `config/player.ts`와 `config/enemies.ts`에서 관리합니다. `config/weapons.ts`에는 Player 검·Player 탄환·Enemy 검·Enemy 탄환 설정이 각각 있습니다. 검의 `orbitRadius`/`angularSpeed`/`intervalSeconds`/`bladeLength`, 탄환의 `radius`/`speed`/`intervalSeconds`/`maximumTravelDistance`, 공통 `attackRange`/`damageMultiplier`를 조절할 수 있습니다. 검의 실제 타격 범위는 회전 반지름과 검 크기에도 영향을 받습니다. Enemy의 정지 사거리도 이 무기 설정을 사용합니다.
+
+`config/experience.ts`의 `requiredExperience`는 각 레벨에서 다음 레벨로 올라가는 데 필요한 경험치입니다. `maxLevel`과 표 길이를 함께 변경하고, 이후 필요량은 `ceil(마지막 표 값 × beyondMaxLevelMultiplier^(현재 레벨 - maxLevel))`로 계산합니다. 분류별 지급량은 `rewards`, 흡수는 `pickup`, 별 모양은 `icon`에서 조정합니다. Enemy별 `experienceCategory`는 `config/enemies.ts`, HUD 스타일은 `config/ui.ts`의 `experience`에 있습니다. 각 설정 값 옆에는 의미와 단위를 주석으로 적습니다.
+
+루트 `AGENTS.md`는 공통 지침입니다. Player, Enemy, World/Obstacles, Config, Scenes, UI, Combat, Experience와 Tests 폴더에는 해당 기능의 `AGENTS.md`를 둡니다. 향후 지침 변경이 유용하다고 판단되면 대상과 내용을 먼저 제안하고, 사용자 승인 후 반영합니다.
+
+## 로직 테스트
+
+현재 Node.js 24 환경에서 아래 명령을 사용합니다. 테스트는 Node 내장 TypeScript 실행과 테스트 러너를 사용하며 추가 패키지는 설치하지 않습니다.
+
+```powershell
+npm.cmd test
+```
+
+현재 자동 테스트는 52개입니다. 스폰 위치·주기·면적별 개수·상한, 사각형/원 충돌, 관통 방지, 순찰/추적/대기/공격 전이, 장애물 우회, 다중 원형 포위, 진영별 타격, 자동 공격 주기, 피격 점멸/밀림 상태, 사망 제거, 경험치 드롭·흡수·레벨 표·표 이후 증가·HUD 상태를 검사합니다. 설정 0/음수/NaN/Infinity에 의한 반복문 정지는 부모 프로세스가 시간 제한을 적용하는 별도 프로세스에서 검사합니다.
+
+기능을 추가하거나 수정할 때는 기존 테스트가 새 동작과 재발 조건을 검증하는지 먼저 확인하고 필요한 부분만 보완합니다. UI 모형 테스트는 실제 브라우저의 포인터 위치 판정을 대신하지 않습니다. 브라우저에서는 검/탄환 버튼의 보이는 위치 클릭, WASD와 자동 공격 동시 실행, HP 바·빨간 점멸, 경험치 흡수·레벨 상승, 카메라 이동 중 HUD 고정, 다시 시작을 확인해야 합니다. 실제 브라우저 플레이 검증은 아직 수행하지 못했습니다.
