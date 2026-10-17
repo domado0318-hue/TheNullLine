@@ -1,9 +1,8 @@
-export interface ObstacleLayout {
-  shape: 'rectangle' | 'circle';
-  x: number;
-  y: number;
-  size: number;
-}
+import { obstacleConfig } from '../config/obstacles';
+import { assertInteger, assertNonNegative, assertPositive } from '../config/validate';
+import type { Obstacle } from './geometry';
+
+export type ObstacleLayout = Obstacle;
 
 // Randomize separated cells so placement always terminates and preserves passages.
 export function createObstacleLayout(
@@ -12,10 +11,21 @@ export function createObstacleLayout(
   playerSize: number,
   random: () => number = Math.random,
 ): ObstacleLayout[] {
-  const minSize = playerSize * 0.8;
-  const maxSize = playerSize * 2.5;
-  const gap = Math.ceil(playerSize * Math.SQRT2) + 8;
-  const count = Math.max(1, Math.round(worldWidth * worldHeight / (3000 * 3000) * 8));
+  assertPositive('world.width', worldWidth);
+  assertPositive('world.height', worldHeight);
+  assertPositive('player.size', playerSize);
+  assertPositive('obstacles.referenceArea', obstacleConfig.referenceArea);
+  assertInteger('obstacles.countAtReferenceArea', obstacleConfig.countAtReferenceArea);
+  assertPositive('obstacles.minSizeRatio', obstacleConfig.minSizeRatio);
+  assertPositive('obstacles.maxSizeRatio', obstacleConfig.maxSizeRatio);
+  assertNonNegative('obstacles.extraPassageWidth', obstacleConfig.extraPassageWidth);
+  if (obstacleConfig.minSizeRatio > obstacleConfig.maxSizeRatio) throw new Error('obstacles.minSizeRatio: maxSizeRatio 이하여야 합니다.');
+  const minSize = playerSize * obstacleConfig.minSizeRatio;
+  const maxSize = playerSize * obstacleConfig.maxSizeRatio;
+  const gap = Math.ceil(playerSize * Math.SQRT2) + obstacleConfig.extraPassageWidth;
+  const count = Math.round(worldWidth * worldHeight / obstacleConfig.referenceArea * obstacleConfig.countAtReferenceArea);
+  assertInteger('obstacles.scaledCount', count);
+  if (count === 0) return [];
   const columns = Math.floor((worldWidth - gap * 2) / (maxSize + gap));
   const rows = Math.floor((worldHeight - gap * 2) / (maxSize + gap));
 
