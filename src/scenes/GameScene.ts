@@ -24,6 +24,9 @@ export class GameScene extends Phaser.Scene {
     // 외부 이미지 없이 플레이어를 나타내는 48×48 사각형을 표시합니다.
     this.player = this.add.rectangle(centerX, centerY, 48, 48, 0x5ee6a8);
 
+    this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight);
+    this.cameras.main.startFollow(this.player);
+
     const keyboard = this.input.keyboard;
 
     if (!keyboard) {
