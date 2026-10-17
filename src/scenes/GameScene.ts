@@ -8,13 +8,18 @@ export class GameScene extends Phaser.Scene {
   private readonly movementDirection = new Phaser.Math.Vector2();
   private readonly movementSpeed = 300; // Pixels per second.
 
+  private readonly worldWidth = 3000;
+  private readonly worldHeight = 3000;
+
   constructor() {
     super('GameScene');
   }
 
   create(): void {
-    const centerX = this.scale.width / 2;
-    const centerY = this.scale.height / 2;
+    this.createWorldGrid();
+
+    const centerX = this.worldWidth / 2;
+    const centerY = this.worldHeight / 2;
 
     // 외부 이미지 없이 플레이어를 나타내는 48×48 사각형을 표시합니다.
     this.player = this.add.rectangle(centerX, centerY, 48, 48, 0x5ee6a8);
@@ -55,13 +60,29 @@ export class GameScene extends Phaser.Scene {
       Phaser.Math.Clamp(
         this.player.x + this.movementDirection.x,
         halfWidth,
-        this.scale.width - halfWidth,
+        this.worldWidth - halfWidth,
       ),
       Phaser.Math.Clamp(
         this.player.y + this.movementDirection.y,
         halfHeight,
-        this.scale.height - halfHeight,
+        this.worldHeight - halfHeight,
       ),
     );
+  }
+
+  private createWorldGrid(): void {
+    const grid = this.add.graphics();
+    const spacing = 100;
+
+    grid.setDepth(-1);
+    grid.lineStyle(1, 0x64748b, 0.18);
+
+    for (let x = 0; x <= this.worldWidth; x += spacing) {
+      grid.lineBetween(x, 0, x, this.worldHeight);
+    }
+
+    for (let y = 0; y <= this.worldHeight; y += spacing) {
+      grid.lineBetween(0, y, this.worldWidth, y);
+    }
   }
 }
