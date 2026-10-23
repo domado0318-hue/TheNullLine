@@ -1,0 +1,205 @@
+{
+  "tool": "built-in image_gen",
+  "referencesInspected": [
+    "public/assets/players/mechanic-portrait.png"
+  ],
+  "rendering": "Finite 3600x1200 combat floor. Floor detail scale 0.75 (stage 8: 0.4), border length scale 0.75. Repeated floor crops inset 32 source pixels to exclude wall columns. Final stage uses a clean 128x128 floor sample and one transparent central erasure decal. Four existing collision footprints preserved.",
+  "stages": [
+    {
+      "stage": 1,
+      "name": "탑승 대기 승강장",
+      "chapter": "boarding",
+      "file": "public/assets/backgrounds/abandoned-platform.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Before boarding: quiet abandoned subway platform, blue-gray small ceramic floor tiles, thin ochre tactile edge, below platform a single delicate horizontal pair of rails. Top border cream wall panels, small amber lamps, narrow closed ticket shutters, side service gates.",
+      "sourceRect": [
+        60,
+        110,
+        1928,
+        516
+      ]
+    },
+    {
+      "stage": 2,
+      "name": "폐쇄 개찰 구역",
+      "chapter": "boarding",
+      "file": "public/assets/backgrounds/ticket-concourse.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Before boarding: deserted ticket concourse. Fine pale-gray square mosaic floor with narrow muted teal wayfinding bands. At outer top and bottom border, small ticket readers, thin steel turnstiles, narrow closed entrances and amber wall lights. Side shutter gates. No rails here.",
+      "sourceRect": [
+        90,
+        112,
+        1868,
+        518
+      ]
+    },
+    {
+      "stage": 3,
+      "name": "역사 정비 구역",
+      "chapter": "boarding",
+      "file": "public/assets/backgrounds/service-platform.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Before boarding: service platform. Fine dark blue ceramic tiles with thin inset service channels and a few small flat inspection covers. Peripheral small tool lockers, coiled wires, delicate pipes, service doors, one narrow railway along bottom outside floor.",
+      "sourceRect": [
+        80,
+        104,
+        1888,
+        520
+      ]
+    },
+    {
+      "stage": 4,
+      "name": "회수 열차 적재장",
+      "chapter": "boarding",
+      "file": "public/assets/backgrounds/freight-platform.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Before boarding: reclamation train loading platform. Fine grey industrial brick tiles, small yellow loading bay corner markings. At top edge small bundled equipment and loading doors; bottom outer edge a cropped slender cream and dark-teal freight train side with many small windows, cargo doors and delicate chassis detail. Train must stay entirely outside playable floor.",
+      "sourceRect": [
+        60,
+        104,
+        1928,
+        450
+      ]
+    },
+    {
+      "stage": 5,
+      "name": "분실물 집하장",
+      "chapter": "boarding",
+      "file": "public/assets/backgrounds/lost-property.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: First boss arena before boarding: abandoned lost-property sorting platform. Fine warm gray tiled floor with a faint thin-lined rectangular collection-grid motif. Small luggage bins, belts and sorting hatches are packed ONLY along outer top border, thin rails along bottom, amber caution lamps and closed service gates. This is the B01 lost-property boss setting, but DO NOT depict a boss.",
+      "sourceRect": [
+        90,
+        150,
+        1868,
+        478
+      ]
+    },
+    {
+      "stage": 6,
+      "name": "NULL LINE · 탑승 화물칸",
+      "chapter": "onboard",
+      "file": "public/assets/backgrounds/boarding-car.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Inside the NULL LINE reclamation train: enormous open cargo carriage with roof removed in overhead view, pale teal worn small rectangular metal floor panels. At narrow top/bottom perimeter: repeated tiny train windows with dark tunnel outside, compact foldaway seats, short vertical ribs, brass latches, warm amber lamps. Closed connector doors at left/right. Clearly train interior, no exterior rails inside floor.",
+      "sourceRect": [
+        96,
+        122,
+        1856,
+        508
+      ]
+    },
+    {
+      "stage": 7,
+      "name": "NULL LINE · 폐배터리칸",
+      "chapter": "onboard",
+      "file": "public/assets/backgrounds/battery-car.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Inside NULL LINE battery reclamation wagon. Small dark olive/teal square metal plates, fine cable channels FLUSH in floor. Narrow perimeter contains compact battery racks with tiny amber indicator lamps and train windows, folded service seats, bolted train ribs, sealed connector doors. Sparse tiny orange boundary paint.",
+      "sourceRect": [
+        96,
+        152,
+        1856,
+        472
+      ]
+    },
+    {
+      "stage": 8,
+      "name": "NULL LINE · 자동 분류칸",
+      "chapter": "onboard",
+      "file": "public/assets/backgrounds/sorting-car.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Inside NULL LINE automated sorting wagon. Small blue-grey ribbed metal floor panels, narrow flush routing lines crossing at right angles. Compact conveyor rollers, scanning hatches and bins ONLY in narrow outer top/bottom perimeter, interspersed small dark tunnel windows and train ribs. All central floor open and flat. Tiny amber lights, ivory/teal hardware.",
+      "sourceRect": [
+        70,
+        126,
+        1908,
+        454
+      ]
+    },
+    {
+      "stage": 9,
+      "name": "NULL LINE · 봉인 화물칸",
+      "chapter": "onboard",
+      "file": "public/assets/backgrounds/sealed-car.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Inside NULL LINE sealed freight wagon. Fine charcoal square tread plates, sparse narrow muted ochre sealing-band floor paint near perimeter. Small sealed ivory cargo lockers and compact metal cases exclusively along perimeter, tiny rectangular observation windows, train ribs and connector doors. Restrained dark red indicator lamps, no writing.",
+      "sourceRect": [
+        140,
+        134,
+        1768,
+        416
+      ]
+    },
+    {
+      "stage": 10,
+      "name": "NULL LINE · 회수 검수칸",
+      "chapter": "onboard",
+      "file": "public/assets/backgrounds/inspection-car.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Second boss arena onboard NULL LINE: automated inspection carriage. Small cream-grey metal floor panels and thin symmetric flush scan-lane guides. Long narrow bank of small CLOSED service windows and scanner ports at upper perimeter, train ribs and small dark tunnel windows at bottom, tiny amber and muted red status lights, closed connector doors left/right. No boss, no big central object.",
+      "sourceRect": [
+        72,
+        112,
+        1904,
+        464
+      ]
+    },
+    {
+      "stage": 11,
+      "name": "종착역 · 하역 구역",
+      "chapter": "terminal",
+      "file": "public/assets/backgrounds/terminal-unload.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: After leaving NULL LINE at the erasure terminus: unloading hall. Fine grey concrete pavers and narrow inset cargo roller strips FLUSH with floor. Outer perimeter has small crane sockets, loading doors, slender overhead-system wall brackets, a cropped freight wagon outside bottom edge. Muted teal/ivory, faint rusty orange grime, amber lamps.",
+      "sourceRect": [
+        112,
+        134,
+        1824,
+        478
+      ]
+    },
+    {
+      "stage": 12,
+      "name": "종착역 · 해체 작업장",
+      "chapter": "terminal",
+      "file": "public/assets/backgrounds/dismantling-hall.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Erasure terminus dismantling workshop. Fine steel-grey checker metal tiles with small scars, sparse thin straight cut guides. Along narrow perimeter only: compact cutting-tool racks, shuttered machine bays, folded arms, cable conduits and small amber lamps. Low desaturated rust accents. Entire playable middle remains empty floor, no pits.",
+      "sourceRect": [
+        64,
+        118,
+        1920,
+        510
+      ]
+    },
+    {
+      "stage": 13,
+      "name": "종착역 · 차폐 중계실",
+      "chapter": "terminal",
+      "file": "public/assets/backgrounds/relay-hall.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Erasure terminus shielding relay hall. Fine slate-blue rectangular floor panels, a quiet thin teal conduit lattice FLUSH in the floor. Outer border compact server cabinets with tiny pale cyan indicators, electrical panels and closed insulated shutters. Match aged cream/teal industrial style, no neon fantasy, no giant machinery.",
+      "sourceRect": [
+        104,
+        104,
+        1840,
+        516
+      ]
+    },
+    {
+      "stage": 14,
+      "name": "말소 시설 · 최종 진입로",
+      "chapter": "terminal",
+      "file": "public/assets/backgrounds/erasure-approach.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: Final approach to erasure facility. Fine desaturated blue-black ceramic tiles, two thin parallel worn ivory guide lines along long horizontal axis, small low contrast panel seams. Perimeter dense small locked access hatches, surveillance wall fixtures, cables, muted red warning lamps and heavy segmented doors. More severe but playable middle readable, no black void.",
+      "sourceRect": [
+        100,
+        108,
+        1848,
+        502
+      ]
+    },
+    {
+      "stage": 15,
+      "name": "말소 경계 · 최종 집행실",
+      "chapter": "terminal",
+      "file": "public/assets/backgrounds/erasure-core.png",
+      "prompt": "Use case: stylized-concept. Production 2D game background, landscape 2048x768. Orthographic high overhead, screen-aligned horizontal/vertical straight walls, NO perspective convergence or isometric diamond. Match inspected The Null Line production art: hand-painted cel shading, confident dark fine outlines, chipped cream enamel, dark teal industrial metal, desaturated blue-grey floor, restrained brass/amber lamps. NOT realistic photography or pixel art.\nCRITICAL PHYSICAL SCALE: the player will be a tiny 20 pixel tall figure on this source image, displayed about 36 pixels tall in game. EVERY environmental detail must fit THAT scale: floor tiles only 10–14px each, about 150 columns and 50 rows of small fine tiles across playable floor; doors only 22–28px wide, chairs 12px wide, lamps 6px. Rail gauge only 24px on this image. NO giant slabs, oversized bolts, huge pipes, enormous floor damage or huge lamps. Make fine rich detail; camera far above a very large floor.\nExact composition and collision layout shared across all stages: playable open rectangle x=32..2016, y=48..688. Thin architecture top 48px, left/right 32px, bottom 80px. Place ALL protruding objects OUTSIDE that open rectangle. Central floor is entirely flat, passable and unobstructed. Only quiet flat markings, small wear/scuffs allowed inside. If platform, tactile strip only 10px wide just inside bottom floor edge, railway below y688 occupies at most 55px with two slender rails 24px apart. No chunky architecture. Small scale tiled floor fills ~80% picture, broad combat space. Borders visibly close all four sides. No people, enemies, props sitting inside walkable area, no letters, text, signs with marks, logos, watermarks or UI. Use same light direction and camera scale as other backgrounds.\nScene: FINAL BOSS arena at erasure boundary. Fine graphite metal square tiles, a large but very FAINT thin-line circular registration diagram painted flush on central floor (just geometry, no letters), small perimeter ivory registry cabinets, compact red/amber lamps, narrow closed blast shutters, delicate conduits. Highest tension, rigid symmetry, restrained desaturated red trim. No central machinery, no boss, no glowing hazard fields.",
+      "sourceRect": [
+        120,
+        96,
+        1808,
+        536
+      ]
+    }
+  ],
+  "referenceRetention": "Earlier platform, opening and rolling-world reference images were discarded. Current final backgrounds and props in public/assets are the artwork masters."
+}

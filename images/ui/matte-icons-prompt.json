@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "reference": "Previous glossy atlas revision (discarded after selection of the matte final).",
+  "styleReferences": [
+    "public/assets/players/mechanic-portrait.png",
+    "public/assets/ui/title.png"
+  ],
+  "prompt": "Use case: style-transfer. EDIT TARGET: existing equipment-icons.png atlas. Style references: mechanic-portrait.png and existing game title. Redraw the same twelve symbols in a calm matte hand-inked illustrated style matching the soft simple character portrait, rather than shiny loot equipment. Preserve the exact image canvas 1448x1086 and exact object placements and silhouettes within these bounding boxes: saw 58,48,328,318; lightning bolt 444,42,246,322; battery 757,50,270,310; bearing 1096,66,291,294; robot arm 52,382,362,318; shield 444,384,251,312; magnet 737,404,297,303; work boot 1074,412,330,278; pulse device 47,730,348,282; wrench 413,708,299,309; heart 753,745,296,265; arrow 1112,743,295,264. All parts should stay a few pixels inside these boxes. Twelve separate objects, four columns and three rows, true alpha transparent background. Make each simple and readable: thick dark brown/teal contours, flat broad muted ivory/ochre/olive shapes, one subtle shadow plane, limited desaturated colors. Heart muted brick red. Remove all specular shine, white reflections, glow, bevel-heavy edges, gold filigree, scratches, studs, bolts, bevels and clutter. No glossy enamel, metallic sparkle, treasure-like rendering, photorealism, 3D render or game loot style. Matte painted tools and simple pictograms, as simple and soft as the character clothing. No text, letters, labels, numbers or background tiles. Keep symbols and positions, simplify their internal detail substantially.",
+  "output": "public/assets/ui/equipment-icons.png"
+}

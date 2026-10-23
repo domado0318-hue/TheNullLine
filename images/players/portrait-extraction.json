@@ -1,0 +1,29 @@
+{
+  "mechanic": {
+    "source": "images/players/portraits/mechanic-comparison.png",
+    "output": "public/assets/players/mechanic-portrait.png",
+    "sourceX": 598,
+    "sourceY": 115,
+    "padding": 6,
+    "width": 470,
+    "height": 476
+  },
+  "signal": {
+    "source": "images/players/portraits/signal-comparison.png",
+    "output": "public/assets/players/signal-portrait.png",
+    "sourceX": 596,
+    "sourceY": 85,
+    "padding": 6,
+    "width": 465,
+    "height": 547
+  },
+  "carrier": {
+    "source": "images/players/portraits/carrier-comparison.png",
+    "output": "public/assets/players/carrier-portrait.png",
+    "sourceX": 93,
+    "sourceY": 98,
+    "padding": 6,
+    "width": 471,
+    "height": 500
+  }
+}

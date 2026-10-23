@@ -1,0 +1,132 @@
+{
+  "frames": {
+    "0": {
+      "frame": {
+        "x": 3,
+        "y": 3,
+        "w": 441,
+        "h": 448
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 441,
+        "h": 448
+      },
+      "sourceSize": {
+        "w": 441,
+        "h": 448
+      }
+    },
+    "1": {
+      "frame": {
+        "x": 551,
+        "y": 3,
+        "w": 542,
+        "h": 368
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 542,
+        "h": 368
+      },
+      "sourceSize": {
+        "w": 542,
+        "h": 368
+      }
+    },
+    "2": {
+      "frame": {
+        "x": 1099,
+        "y": 3,
+        "w": 377,
+        "h": 360
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 377,
+        "h": 360
+      },
+      "sourceSize": {
+        "w": 377,
+        "h": 360
+      }
+    },
+    "3": {
+      "frame": {
+        "x": 3,
+        "y": 468,
+        "w": 491,
+        "h": 416
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 491,
+        "h": 416
+      },
+      "sourceSize": {
+        "w": 491,
+        "h": 416
+      }
+    },
+    "4": {
+      "frame": {
+        "x": 551,
+        "y": 468,
+        "w": 446,
+        "h": 459
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 446,
+        "h": 459
+      },
+      "sourceSize": {
+        "w": 446,
+        "h": 459
+      }
+    },
+    "5": {
+      "frame": {
+        "x": 1099,
+        "y": 468,
+        "w": 514,
+        "h": 406
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 514,
+        "h": 406
+      },
+      "sourceSize": {
+        "w": 514,
+        "h": 406
+      }
+    }
+  },
+  "meta": {
+    "image": "sheet-1.png",
+    "size": {
+      "w": 1644,
+      "h": 930
+    },
+    "scale": "1"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "mode": "built-in image_gen",
+  "styleReferences": [
+    "public/assets/players/mechanic-portrait.png",
+    "public/assets/enemies/sheet-0.png"
+  ],
+  "prompt": "Create a production 4x4 grid of 16 isolated 2D game combat effect sprites on a genuinely TRANSPARENT square background.\nThe TWO attached images are the mandatory ART STYLE references, not subjects to include. Reference 1 is the actual playable railway mechanic portrait. Reference 2 is the game's actual enemy art. Match their simple, chunky, matte hand-painted cartoon drawing EXACTLY: thick uneven DARK BROWN contours, broad FLAT color regions, only 2 or 3 faceted shadow tones, warm cream highlights, restrained ochre/olive/desaturated teal/brick red palette. Their shapes are charming and simple with clear silhouettes. Same artist, same line weight, same level of simplification. Each effect must be readable when tiny, like the equipment already in the character's hands. This is NOT realistic VFX art.\nCRITICAL corrections: NO photorealistic metal, NO fine texture, NO scratches/noise/grain, NO polished bevels, NO lens flare, NO neon bloom, NO translucent colored glow fog, NO gradients, NO intricate rings, NO ornate rivets. Energy effects are clean solid hand-painted angular strokes in a few flat colors, with dark brown contour accents. Steel is three broad matte gray shapes. Brass is flat muted ochre. Smoke is 3 simple olive puffs. Use soft ivory only for a small bright center. Absolutely avoid the flashy realistic mobile-game VFX style.\nLayout: exactly 4 columns and 4 rows of equal cells. Center one complete sprite in each cell. All paint and edges fit in central 65% of each cell. Completely transparent gutters on all sides. No labels, letters, numbers, text, UI frames, grid lines, background, scene or characters.\nSubjects in row-major order:\nRow1: 1 chunky 8-tooth steel circular cutter with a plain ochre hub, same simple drawing as mechanic hand tool; 2 simple broad ochre/cream crescent slash opening LEFT, positioned on RIGHT of its cell, dark brown brush edge; 3 LEFT-to-RIGHT branching lightning made of just three angular matte muted teal and ivory strokes, thin dark brown edges; 4 plain top-down olive spent battery mine with two ochre straps and one tiny pale green lamp.\nRow2: 1 simple angular ochre/cream impact explosion with 5 chunky dark brown debris pieces; 2 single chunky matte gray rivet pointed RIGHT with 2 ochre speed strokes trailing left; 3 small muted teal/ivory angular electric dart pointed RIGHT with 2 short trailing strokes; 4 simple olive capsule pointed RIGHT with 3 flat sage smoke puffs to its left.\nRow3: 1 hollow muted teal/ivory shield ring drawn with 3 broad brush strokes, completely transparent middle; 2 hollow ochre/cream shockwave ring with 4 short outward brush strokes, completely transparent middle; 3 hollow flat olive smoke puddle made of 5 broad rounded puffs, mostly transparent center; 4 small 4-point cream/ochre impact spark with a brown outline and 3 flecks.\nRow4: 1 broad simple brick-red/cream crescent slash opening LEFT, same style as ochre slash; 2 chunky rust-colored triangular scrap projectile pointed RIGHT with 2 flat brick speed strokes left; 3 straight horizontal brick red/cream energy strip from LEFT to RIGHT with 3 jagged kinks, no smoke; 4 simple angular dark brown ground crack and 5 flat ochre rubble pieces around transparent center.\nDeliver game-ready isolated transparent sprites which belong next to the supplied characters. Simplicity and matching the references are more important than detail or spectacle.",
+  "spacingRefinement": "Edit only spacing: preserve exact matte cartoon subjects, contours and colors; center every sprite in central 65% of its equal 4x4 cell with clear transparent gutters. No texture, realism or glow.",
+  "source": "public/assets/effects/battle-effects.png",
+  "packing": "Generated PNG copied unchanged. Atlas metadata divides original 1263×1246px PNG at rounded 4x4 boundaries.",
+  "frames": [
+    "saw",
+    "cut",
+    "lightning",
+    "mine",
+    "explosion",
+    "rivet",
+    "bolt",
+    "capsule",
+    "shield",
+    "pulse",
+    "poison",
+    "hit",
+    "enemyCut",
+    "shard",
+    "beam",
+    "crush"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "tool": "built-in image_gen",
+  "prompts": [
+    {
+      "id": "ticket",
+      "ref": "abandoned-platform.png",
+      "prompt": "Use case: stylized-concept. Create ONE isolated production game environment prop, transparent PNG 1024x1024. Reference image is only the style and camera of the actual game environment. Match desaturated blue-grey/teal steel, scuffed narrow dirty ivory trim, tiny tarnished brass accents, thin charcoal ink contours, restrained painterly material detail. Elevated orthographic frontal camera looking down 60 degrees, zero yaw, all long front edges HORIZONTAL, depth edges VERTICAL, NOT diagonal isometric. Broad visible top, short front plane. Game scale readable beside 48px character. Entire object within middle 80% canvas, clean true alpha around silhouette, no floor, no backdrop, no glow, no cast shadow, no vignette, no text or labels or logos. Do not draw reference room. One slim freestanding vintage railway ticket vending machine with dark blank recessed screen and small slot, blue-grey metal housing, narrow aged ivory corner trim. Slightly taller than a person, modest proportions, rectangular base; camera sees top and front but no left/right side faces."
+    },
+    {
+      "id": "bins",
+      "ref": "abandoned-platform.png",
+      "prompt": "Use case: stylized-concept. Create ONE isolated production game environment prop, transparent PNG 1024x1024. Reference image is only the style and camera of the actual game environment. Match desaturated blue-grey/teal steel, scuffed narrow dirty ivory trim, tiny tarnished brass accents, thin charcoal ink contours, restrained painterly material detail. Elevated orthographic frontal camera looking down 60 degrees, zero yaw, all long front edges HORIZONTAL, depth edges VERTICAL, NOT diagonal isometric. Broad visible top, short front plane. Game scale readable beside 48px character. Entire object within middle 80% canvas, clean true alpha around silhouette, no floor, no backdrop, no glow, no cast shadow, no vignette, no text or labels or logos. Do not draw reference room. One compact paired railway recycling bin unit: two small cylindrical blue-grey metal bins joined side by side on a low narrow base, each with oval visible top and dark recessed opening, sparse brass rim. Knee/waist height. No markings, no pictograms, no waste scattered outside."
+    },
+    {
+      "id": "battery",
+      "ref": "boarding-car.png",
+      "prompt": "Use case: stylized-concept. Create ONE isolated production game environment prop, transparent PNG 1024x1024. Reference image is only the style and camera of the actual game environment. Match desaturated blue-grey/teal steel, scuffed narrow dirty ivory trim, tiny tarnished brass accents, thin charcoal ink contours, restrained painterly material detail. Elevated orthographic frontal camera looking down 60 degrees, zero yaw, all long front edges HORIZONTAL, depth edges VERTICAL, NOT diagonal isometric. Broad visible top, short front plane. Game scale readable beside 48px character. Entire object within middle 80% canvas, clean true alpha around silhouette, no floor, no backdrop, no glow, no cast shadow, no vignette, no text or labels or logos. Do not draw reference room. One waist-height open steel battery cradle holding two squat industrial battery modules side by side, visible ivory ceramic caps and small copper terminal fittings. Dark desaturated teal metal rack, rectangular footprint, low sturdy proportions. No electric glow or wires extending outside footprint."
+    },
+    {
+      "id": "pallet",
+      "ref": "boarding-car.png",
+      "prompt": "Use case: stylized-concept. Create ONE isolated production game environment prop, transparent PNG 1024x1024. Reference image is only the style and camera of the actual game environment. Match desaturated blue-grey/teal steel, scuffed narrow dirty ivory trim, tiny tarnished brass accents, thin charcoal ink contours, restrained painterly material detail. Elevated orthographic frontal camera looking down 60 degrees, zero yaw, all long front edges HORIZONTAL, depth edges VERTICAL, NOT diagonal isometric. Broad visible top, short front plane. Game scale readable beside 48px character. Entire object within middle 80% canvas, clean true alpha around silhouette, no floor, no backdrop, no glow, no cast shadow, no vignette, no text or labels or logos. Do not draw reference room. One compact squat freight pallet holding two closed rectangular railway shipping cases side by side with a single smaller case centered behind them. Slate blue steel cases, worn ivory corner braces and dull brass latches, dark battered wooden pallet. Low height, broad top visible. Nothing spilled outside pallet."
+    },
+    {
+      "id": "cabinet",
+      "ref": "dismantling-hall.png",
+      "prompt": "Use case: stylized-concept. Create ONE isolated production game environment prop, transparent PNG 1024x1024. Reference image is only the style and camera of the actual game environment. Match desaturated blue-grey/teal steel, scuffed narrow dirty ivory trim, tiny tarnished brass accents, thin charcoal ink contours, restrained painterly material detail. Elevated orthographic frontal camera looking down 60 degrees, zero yaw, all long front edges HORIZONTAL, depth edges VERTICAL, NOT diagonal isometric. Broad visible top, short front plane. Game scale readable beside 48px character. Entire object within middle 80% canvas, clean true alpha around silhouette, no floor, no backdrop, no glow, no cast shadow, no vignette, no text or labels or logos. Do not draw reference room. One compact waist-to-chest-height industrial electrical control cabinet. Desaturated teal rectangular enclosure, narrow ivory trim, two small round analog gauges with NO numbers or markings, three small dark switches, short vent slots. Squat wide proportions, tiny amber glass indicator but no glow. Heavy rectangular base."
+    },
+    {
+      "id": "reel",
+      "ref": "dismantling-hall.png",
+      "prompt": "Use case: stylized-concept. Create ONE isolated production game environment prop, transparent PNG 1024x1024. Reference image is only the style and camera of the actual game environment. Match desaturated blue-grey/teal steel, scuffed narrow dirty ivory trim, tiny tarnished brass accents, thin charcoal ink contours, restrained painterly material detail. Elevated orthographic frontal camera looking down 60 degrees, zero yaw, all long front edges HORIZONTAL, depth edges VERTICAL, NOT diagonal isometric. Broad visible top, short front plane. Game scale readable beside 48px character. Entire object within middle 80% canvas, clean true alpha around silhouette, no floor, no backdrop, no glow, no cast shadow, no vignette, no text or labels or logos. Do not draw reference room. One compact industrial cable reel standing upright in a low steel cradle. Dark coiled cable around a horizontal axle between two scuffed blue-grey circular end plates, small brass hub. Broad upper curve visible from above, front end-plate facing viewer, simple readable circular silhouette. No cable or loose parts extending beyond base. Low knee/waist height."
+    }
+  ]
+}

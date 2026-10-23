@@ -1,0 +1,72 @@
+{
+  "frames": {
+    "0": {
+      "frame": {
+        "x": 3,
+        "y": 3,
+        "w": 753,
+        "h": 613
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 753,
+        "h": 613
+      },
+      "sourceSize": {
+        "w": 753,
+        "h": 613
+      }
+    },
+    "1": {
+      "frame": {
+        "x": 762,
+        "y": 3,
+        "w": 627,
+        "h": 658
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 627,
+        "h": 658
+      },
+      "sourceSize": {
+        "w": 627,
+        "h": 658
+      }
+    },
+    "2": {
+      "frame": {
+        "x": 1521,
+        "y": 3,
+        "w": 667,
+        "h": 693
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 667,
+        "h": 693
+      },
+      "sourceSize": {
+        "w": 667,
+        "h": 693
+      }
+    }
+  },
+  "meta": {
+    "image": "sheet-3.png",
+    "size": {
+      "w": 2277,
+      "h": 699
+    },
+    "scale": "1"
+  }
+}

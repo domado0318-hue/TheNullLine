@@ -12,3 +12,6 @@ dist/
 *.tsbuildinfo
 .DS_Store
 Thumbs.db
+
+# Local visual verification captures (source art and prompts remain tracked)
+/images/verification/

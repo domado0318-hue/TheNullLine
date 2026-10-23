@@ -1,0 +1,7 @@
+{
+  "tool": "built-in image_gen",
+  "intent": "background-extraction",
+  "reference": "public/assets/backgrounds/erasure-core.png",
+  "output": "public/assets/backgrounds/erasure-mark.png",
+  "prompt": "Use case: background-extraction. Edit target: attached erasure-core game background. Extract ONLY the thin weathered ivory and muted copper concentric circular execution markings at the center, including the tiny square mechanical nodes. Remove every floor tile, every floor color, all scenery, walls, rails, every straight line extending beyond the outer circle. Output a single isolated circular floor decal on a genuinely transparent background, square 1024x1024 canvas, circle centered with 6 percent transparent padding. Preserve fine hand-painted worn linework and muted low-contrast colors of the original rings. Top-down orthographic, no perspective. No text, no new symbols, no drop shadow, no glow, no solid disc or background within the rings: all areas between the thin lines must also be transparent. This transparent decal will overlay existing floor tiles in a game; only painted thin circular markings may be visible."
+}

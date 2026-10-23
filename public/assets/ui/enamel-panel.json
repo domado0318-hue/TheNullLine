@@ -1,0 +1,32 @@
+{
+  "frames": {
+    "panel": {
+      "frame": {
+        "x": 31,
+        "y": 134,
+        "w": 2109,
+        "h": 433
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 2109,
+        "h": 433
+      },
+      "sourceSize": {
+        "w": 2109,
+        "h": 433
+      }
+    }
+  },
+  "meta": {
+    "image": "enamel-panel.png",
+    "size": {
+      "w": 2171,
+      "h": 724
+    },
+    "scale": "1"
+  }
+}

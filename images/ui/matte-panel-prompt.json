@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "editTarget": "Previous glossy atlas revision (discarded after selection of the matte final).",
+  "styleReferences": [
+    "public/assets/players/mechanic-portrait.png",
+    "public/assets/ui/title.png"
+  ],
+  "prompt": "Use case: style-transfer. Edit target image 1: a blank horizontal railway UI panel. Supporting style references image 2: the game's softly shaded matte illustrated character; image 3: the title's muted industrial palette. Replace the overly glossy, grungy enamel and metallic hardware with the SAME QUIET MATTE HAND-PAINTED STYLE AS THE CHARACTER. Single horizontal blank sign, front-on orthographic, original wide rectangular silhouette about 4.6:1, true transparent exterior. Aim for original canvas 2172x724 and object bounds x40 y120 width2092 height458; keep some transparent margin. Warm muted ivory main field (#e4d9bd), flat desaturated dark teal frame (#233b3e), one narrow charcoal outline. Frame should be thin, around 2% of panel height, with restrained hand-inked edge irregularity, a single subtle broad painted shadow plane along the lower edge. A narrow muted ochre (#b4955b) route accent along the bottom, only 4% of panel height. The central 80% should be completely calm and nearly uniform, suitable for crisp live game text. Remove ALL polished metal, specular highlights, brass bevels, shiny gradients, chunky multilayer rim, screw heads, bolts, chipped paint, rust, scratches and speckles. No parchment or paper fibers. No dark vignette, no glow, no drop shadow outside the silhouette, no rods or brackets, no badges, no icons, no arrows. No letters, numbers, labels, pseudo-text, or watermarks. The finished panel should sit naturally next to the matte character portrait and quiet teal UI, not look like shiny fantasy loot or a photo of an enamel sign.",
+  "output": "public/assets/ui/enamel-panel.png"
+}
