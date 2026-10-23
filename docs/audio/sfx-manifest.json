@@ -1,0 +1,579 @@
+{
+  "sampleRate": 48000,
+  "channels": 1,
+  "bits": 16,
+  "method": "Original procedural synthesis; no external recordings",
+  "listeningStatus": "Not auditioned in game",
+  "assets": [
+    {
+      "id": "U01",
+      "file": "public/assets/audio/sfx/ui_focus.wav",
+      "seconds": 0.09,
+      "peakDbfs": -15,
+      "rmsDbfs": -31.37,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 19.13,
+      "sha256": "1f8883d34c335e537c07bd2a42d6bf7463b66f647c220265437c948cb0b0447c"
+    },
+    {
+      "id": "U02",
+      "file": "public/assets/audio/sfx/ui_confirm.wav",
+      "seconds": 0.22904166666666667,
+      "peakDbfs": -10,
+      "rmsDbfs": -23.11,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 20,
+      "sha256": "72c5a88e5f590977f47b6194196e2f316335e89d1ac02d1a500518f9d19989ee"
+    },
+    {
+      "id": "U03",
+      "file": "public/assets/audio/sfx/ui_page.wav",
+      "seconds": 0.21177083333333332,
+      "peakDbfs": -15,
+      "rmsDbfs": -30.94,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "a2bcef6128804365cc69867586b646330d024acf54c24b97bfcb766516468235"
+    },
+    {
+      "id": "U04",
+      "file": "public/assets/audio/sfx/level_up.wav",
+      "seconds": 0.95,
+      "peakDbfs": -9,
+      "rmsDbfs": -20.57,
+      "leadingSilenceMs": 0.1,
+      "trailingSilenceMs": 16.73,
+      "sha256": "c3ba5c18b2f6a3de804441ac78889346dbc9df6ea0818c0d997c3d474bd081f3"
+    },
+    {
+      "id": "U05",
+      "file": "public/assets/audio/sfx/xp_pickup.wav",
+      "seconds": 0.1130625,
+      "peakDbfs": -16,
+      "rmsDbfs": -29.48,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "8f6709b22af090c1db03e547ede017fa50955341f7cea8fffc59f8fe6844a751"
+    },
+    {
+      "id": "U06",
+      "file": "public/assets/audio/sfx/player_hit.wav",
+      "seconds": 0.219125,
+      "peakDbfs": -7,
+      "rmsDbfs": -20.75,
+      "leadingSilenceMs": 0.1,
+      "trailingSilenceMs": 19.94,
+      "sha256": "a3989c64b7a6c8b2871b1e1190baa147b9ffb4146c2bc5e56c70f2dfcd322646"
+    },
+    {
+      "id": "U07",
+      "file": "public/assets/audio/sfx/shield_gain.wav",
+      "seconds": 0.41964583333333333,
+      "peakDbfs": -11,
+      "rmsDbfs": -20.34,
+      "leadingSilenceMs": 0.25,
+      "trailingSilenceMs": 20,
+      "sha256": "7fdd1085e715a5bfb09fb909e24a0a2d2b4d6edbab41f580dff9d8e59a2b620b"
+    },
+    {
+      "id": "U08",
+      "file": "public/assets/audio/sfx/shield_hit.wav",
+      "seconds": 0.16125,
+      "peakDbfs": -10,
+      "rmsDbfs": -24.82,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 19.96,
+      "sha256": "4750ae7cdb52681c3b0d76105a923e3ccd7ec7787ac95f849223c10233fdb8fc"
+    },
+    {
+      "id": "U09",
+      "file": "public/assets/audio/sfx/shield_break.wav",
+      "seconds": 0.31614583333333335,
+      "peakDbfs": -9,
+      "rmsDbfs": -23.7,
+      "leadingSilenceMs": 0.1,
+      "trailingSilenceMs": 19.98,
+      "sha256": "dcd514b786e87621e8e7781a6c13e8ccaa5e57be013bf5829c0d85b94551fd42"
+    },
+    {
+      "id": "U10",
+      "file": "public/assets/audio/sfx/heal.wav",
+      "seconds": 0.44966666666666666,
+      "peakDbfs": -12,
+      "rmsDbfs": -26.86,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 19.98,
+      "sha256": "0cad3226774bfeef1d834c8a0435af2db3620afc2cadce639b0caa1d8bed3a85"
+    },
+    {
+      "id": "U11",
+      "file": "public/assets/audio/sfx/magnet_collect.wav",
+      "seconds": 0.5723125,
+      "peakDbfs": -12,
+      "rmsDbfs": -19.48,
+      "leadingSilenceMs": 0.4,
+      "trailingSilenceMs": 19.98,
+      "sha256": "41ff2e3743441b002e03eaca7bb70b9775a61473cc870ca4161899b557b2e11e"
+    },
+    {
+      "id": "U12",
+      "file": "public/assets/audio/sfx/charge_ready.wav",
+      "seconds": 0.23,
+      "peakDbfs": -13,
+      "rmsDbfs": -24.93,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 18.67,
+      "sha256": "dab962f3dbcfdc6d42217fef5fe2995b15bc913d84a02e78c0788d2b7be60ca0"
+    },
+    {
+      "id": "W01",
+      "file": "public/assets/audio/sfx/mechanic_cutter.wav",
+      "seconds": 0.4399375,
+      "peakDbfs": -10,
+      "rmsDbfs": -18.47,
+      "leadingSilenceMs": 0.17,
+      "trailingSilenceMs": 20,
+      "sha256": "f07acac8712144ef1c61956b8719ed32b4692e734559efb2cbd277caf032da71"
+    },
+    {
+      "id": "W02",
+      "file": "public/assets/audio/sfx/mechanic_strong.wav",
+      "seconds": 0.3454583333333333,
+      "peakDbfs": -7,
+      "rmsDbfs": -20.41,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 19.96,
+      "sha256": "97596ab9433531ea0190ccd836ea5e33e107b7485a7b8c39563f56f10832b063"
+    },
+    {
+      "id": "W03",
+      "file": "public/assets/audio/sfx/signal_discharge.wav",
+      "seconds": 0.25,
+      "peakDbfs": -9,
+      "rmsDbfs": -22.66,
+      "leadingSilenceMs": 0.1,
+      "trailingSilenceMs": 16,
+      "sha256": "2d3e39e0ac4737d840fe8d846fb73e36612b168b218d16f975e71273c25f7585"
+    },
+    {
+      "id": "W04",
+      "file": "public/assets/audio/sfx/signal_chain.wav",
+      "seconds": 0.09,
+      "peakDbfs": -15,
+      "rmsDbfs": -28.9,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 12.6,
+      "sha256": "af933ca711c9688ee27844f29da4ddbcd751d7e20f7f0aca3807f6a9023b41eb"
+    },
+    {
+      "id": "W05",
+      "file": "public/assets/audio/sfx/carrier_place.wav",
+      "seconds": 0.20789583333333334,
+      "peakDbfs": -12,
+      "rmsDbfs": -25.97,
+      "leadingSilenceMs": 0.1,
+      "trailingSilenceMs": 19.96,
+      "sha256": "4741337355025d216e6c43e35111d64956d77d1f6a84f4207ad300b0ba1cec9d"
+    },
+    {
+      "id": "W06",
+      "file": "public/assets/audio/sfx/carrier_arm.wav",
+      "seconds": 0.09,
+      "peakDbfs": -17,
+      "rmsDbfs": -31.88,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 19.6,
+      "sha256": "4f9bef6263fefa8536963aa532ba2582428b6238091eb4128036499a206e3ece"
+    },
+    {
+      "id": "W07",
+      "file": "public/assets/audio/sfx/carrier_blast.wav",
+      "seconds": 0.37875,
+      "peakDbfs": -8,
+      "rmsDbfs": -22.58,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "9cee0234c2fa798d8323f2eb4b993f8da6c9edf193c9b366108c36b7d54e27f1"
+    },
+    {
+      "id": "W08",
+      "file": "public/assets/audio/sfx/carrier_blast_charged.wav",
+      "seconds": 0.5557916666666667,
+      "peakDbfs": -7,
+      "rmsDbfs": -21.98,
+      "leadingSilenceMs": 0.15,
+      "trailingSilenceMs": 19.96,
+      "sha256": "7b30d2d58c0b20c4dc8cf88fcd18a5b11043dfd8447fff57d6eca686dc8910ba"
+    },
+    {
+      "id": "A01",
+      "file": "public/assets/audio/sfx/weld_spark.wav",
+      "seconds": 0.221,
+      "peakDbfs": -12,
+      "rmsDbfs": -32.13,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 18.23,
+      "sha256": "4ef46bf1ec26f26b4dcf3caaa7f63ab5d7ec5fce831cad14b43a640f75c9523c"
+    },
+    {
+      "id": "A02",
+      "file": "public/assets/audio/sfx/pressure_pulse.wav",
+      "seconds": 0.3562708333333333,
+      "peakDbfs": -10,
+      "rmsDbfs": -25.35,
+      "leadingSilenceMs": 0.13,
+      "trailingSilenceMs": 20,
+      "sha256": "7d1d798357fc5fe9581c1aed3830c6b1c536c068bd6474f71f0bda3531f858a7"
+    },
+    {
+      "id": "A03",
+      "file": "public/assets/audio/sfx/saw_throw.wav",
+      "seconds": 0.34975,
+      "peakDbfs": -11,
+      "rmsDbfs": -20.17,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "175bcfdb615ac60a01897b1868bfffd1d7a5460ff93ae550b70763ad7cf7ff12"
+    },
+    {
+      "id": "A04",
+      "file": "public/assets/audio/sfx/heat_zone_start.wav",
+      "seconds": 0.4769583333333333,
+      "peakDbfs": -15,
+      "rmsDbfs": -33.46,
+      "leadingSilenceMs": 0.1,
+      "trailingSilenceMs": 20,
+      "sha256": "cc3055a9d6de07977b260c4f6de5801c67e66f43fcd20a8a5ede5759ee9aec40"
+    },
+    {
+      "id": "A05",
+      "file": "public/assets/audio/sfx/electric_pulse.wav",
+      "seconds": 0.33816666666666667,
+      "peakDbfs": -11,
+      "rmsDbfs": -24.9,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 19.98,
+      "sha256": "01dbaca5b57f58d3b2693f848d188d3bd7eb3fce5f2a16ff9ba4e1c27d7950fb"
+    },
+    {
+      "id": "A06",
+      "file": "public/assets/audio/sfx/spark_shot.wav",
+      "seconds": 0.18,
+      "peakDbfs": -12,
+      "rmsDbfs": -26.51,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 17.67,
+      "sha256": "882718fad37f424c73c97f965dadd1734ebf61ef431706599ba6b1b15983aeb8"
+    },
+    {
+      "id": "A07",
+      "file": "public/assets/audio/sfx/beacon_start.wav",
+      "seconds": 0.4795625,
+      "peakDbfs": -13,
+      "rmsDbfs": -23.07,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "0fb6dea476a8a425aba13f972027aaf3aaaaf6482f07dcf80add4d97e1353436"
+    },
+    {
+      "id": "A08",
+      "file": "public/assets/audio/sfx/capacitor_blast.wav",
+      "seconds": 0.3034375,
+      "peakDbfs": -10,
+      "rmsDbfs": -24.89,
+      "leadingSilenceMs": 0.1,
+      "trailingSilenceMs": 20,
+      "sha256": "aa8bedc132136a67799752f6e28c645c91e6a2abcb1688d4ea5f9479a780f734"
+    },
+    {
+      "id": "A09",
+      "file": "public/assets/audio/sfx/scrap_scatter.wav",
+      "seconds": 0.29710416666666667,
+      "peakDbfs": -12,
+      "rmsDbfs": -28.38,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "dfa50227059d85f8e23509cc7856c9f8b44fdb7e35b27c729a310024d00441c5"
+    },
+    {
+      "id": "A10",
+      "file": "public/assets/audio/sfx/leak_start.wav",
+      "seconds": 0.43675,
+      "peakDbfs": -15,
+      "rmsDbfs": -29.01,
+      "leadingSilenceMs": 0.13,
+      "trailingSilenceMs": 20,
+      "sha256": "8afcf18f97b4a1e923f64e431ae0fbe92382a3fe4e15e38db4e4b32e128c3111"
+    },
+    {
+      "id": "A11",
+      "file": "public/assets/audio/sfx/waste_shot.wav",
+      "seconds": 0.20897916666666666,
+      "peakDbfs": -11,
+      "rmsDbfs": -25.41,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 19.13,
+      "sha256": "746bbf90f429064d02dae2db4e7f9b17cf48b0e3d195f8fa891e4ce6f9fc6765"
+    },
+    {
+      "id": "E01",
+      "file": "public/assets/audio/sfx/enemy_hit_soft.wav",
+      "seconds": 0.15,
+      "peakDbfs": -13,
+      "rmsDbfs": -30.01,
+      "leadingSilenceMs": 0.13,
+      "trailingSilenceMs": 12.19,
+      "sha256": "2d3ccdcf9051fce80863e4ff57cdfd53c62eb6c9ca5cbf9cebb3c05c07375fc5"
+    },
+    {
+      "id": "E02",
+      "file": "public/assets/audio/sfx/enemy_hit_metal.wav",
+      "seconds": 0.17,
+      "peakDbfs": -13,
+      "rmsDbfs": -27.82,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 18.15,
+      "sha256": "d0da0eb992de26e69b55e8fbf565d85ca61533783d200bb43895b41d29c8a7aa"
+    },
+    {
+      "id": "E03",
+      "file": "public/assets/audio/sfx/enemy_guard.wav",
+      "seconds": 0.22,
+      "peakDbfs": -11,
+      "rmsDbfs": -24.68,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 16.85,
+      "sha256": "ba32bb7c0639e14c9144fc0e1851ca287e0bbbd1729aae3400d89184dde17740"
+    },
+    {
+      "id": "E04",
+      "file": "public/assets/audio/sfx/enemy_defeat.wav",
+      "seconds": 0.3460416666666667,
+      "peakDbfs": -13,
+      "rmsDbfs": -31.8,
+      "leadingSilenceMs": 0.17,
+      "trailingSilenceMs": 20,
+      "sha256": "7e9dbf92fbefd395893e4f79f6e7bfee10cae9ffc7cdc55c86eb2a4acaea51e5"
+    },
+    {
+      "id": "E05",
+      "file": "public/assets/audio/sfx/enemy_melee.wav",
+      "seconds": 0.23854166666666668,
+      "peakDbfs": -13,
+      "rmsDbfs": -30.42,
+      "leadingSilenceMs": 0.33,
+      "trailingSilenceMs": 20,
+      "sha256": "bc64e2a5634f253eaff0529c84d0223766fe3e61b48e7616323d275d018816f6"
+    },
+    {
+      "id": "E06",
+      "file": "public/assets/audio/sfx/paper_shot.wav",
+      "seconds": 0.14,
+      "peakDbfs": -14,
+      "rmsDbfs": -31.66,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 14.67,
+      "sha256": "57ecb6055d090cbf7c9fef0916b0d056f4b04b35219335b70492ed19cbbbc7ac"
+    },
+    {
+      "id": "E07",
+      "file": "public/assets/audio/sfx/ground_warning.wav",
+      "seconds": 0.26,
+      "peakDbfs": -8,
+      "rmsDbfs": -20.37,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 12.35,
+      "sha256": "4c49909cd329f72495a963e82acb9949a6041aa41528f718f0c51f1405142ead"
+    },
+    {
+      "id": "E08",
+      "file": "public/assets/audio/sfx/wet_impact.wav",
+      "seconds": 0.39297916666666666,
+      "peakDbfs": -11,
+      "rmsDbfs": -27.73,
+      "leadingSilenceMs": 0.17,
+      "trailingSilenceMs": 20,
+      "sha256": "169f57f6bd8d28e5503a95942c852d8346d49c6a965f46193f1cd03afcb646c5"
+    },
+    {
+      "id": "E09",
+      "file": "public/assets/audio/sfx/charge_warning.wav",
+      "seconds": 0.41985416666666664,
+      "peakDbfs": -8,
+      "rmsDbfs": -15.83,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 19.98,
+      "sha256": "295e536144c8feae664c342712105c898aec8e3bd326f1ecfab638563dcc6601"
+    },
+    {
+      "id": "E10",
+      "file": "public/assets/audio/sfx/charge_release.wav",
+      "seconds": 0.32766666666666666,
+      "peakDbfs": -10,
+      "rmsDbfs": -26.18,
+      "leadingSilenceMs": 0.17,
+      "trailingSilenceMs": 20,
+      "sha256": "ff64709923e8642eb502d2a1daef112bb55afdbbf8b92017a6ca4201e34c45a1"
+    },
+    {
+      "id": "E11",
+      "file": "public/assets/audio/sfx/explosion_warning.wav",
+      "seconds": 0.4282916666666667,
+      "peakDbfs": -8,
+      "rmsDbfs": -19.63,
+      "leadingSilenceMs": 0.17,
+      "trailingSilenceMs": 20,
+      "sha256": "9df9d689988fd7bff3946ac761ee740e17109d2ffe26d06049344f3ff81dd889"
+    },
+    {
+      "id": "E12",
+      "file": "public/assets/audio/sfx/packet_burst.wav",
+      "seconds": 0.3277291666666667,
+      "peakDbfs": -10,
+      "rmsDbfs": -27.84,
+      "leadingSilenceMs": 0.13,
+      "trailingSilenceMs": 20,
+      "sha256": "6f5ff52a21bd8251dddf94124a5ca6a14c9298e68f7bc3c78701d8e73e7c9f54"
+    },
+    {
+      "id": "E13",
+      "file": "public/assets/audio/sfx/summon_open.wav",
+      "seconds": 0.5762083333333333,
+      "peakDbfs": -11,
+      "rmsDbfs": -25.18,
+      "leadingSilenceMs": 0.15,
+      "trailingSilenceMs": 19.98,
+      "sha256": "61bd11df42cd13aef8a86a6cfbb0ea7f31732a16811547aec7922af6e7717542"
+    },
+    {
+      "id": "E14",
+      "file": "public/assets/audio/sfx/hook_warning.wav",
+      "seconds": 0.35870833333333335,
+      "peakDbfs": -8,
+      "rmsDbfs": -21.86,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 20,
+      "sha256": "947bffc2d5eb9ece1b9a6e965ab0c1e66d95488c3636a3644d74f252d492e2b7"
+    },
+    {
+      "id": "E15",
+      "file": "public/assets/audio/sfx/hook_release.wav",
+      "seconds": 0.39791666666666664,
+      "peakDbfs": -10,
+      "rmsDbfs": -27.8,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 20,
+      "sha256": "4b5a435f15213ab6a62d696f12e773a99ed4b314d7949776f3875a102db444d4"
+    },
+    {
+      "id": "E16",
+      "file": "public/assets/audio/sfx/beam_warning.wav",
+      "seconds": 0.5197916666666667,
+      "peakDbfs": -8,
+      "rmsDbfs": -15.56,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 20,
+      "sha256": "8dedf787af13f7f5cbba143d1fc9613c551b53f52562efaf1a818319ed6588d4"
+    },
+    {
+      "id": "E17",
+      "file": "public/assets/audio/sfx/beam_release.wav",
+      "seconds": 0.458,
+      "peakDbfs": -9,
+      "rmsDbfs": -18.06,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 20,
+      "sha256": "20668fb60d8f4e32f4a1528712fce5fb227081baf539006d69a3ee0bf127a7e2"
+    },
+    {
+      "id": "E18",
+      "file": "public/assets/audio/sfx/enemy_shield.wav",
+      "seconds": 0.4690625,
+      "peakDbfs": -12,
+      "rmsDbfs": -25.29,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "7a4f6060147be036b0d0f971ea79aae9ad8f9797fb242df24173e15dca9271fa"
+    },
+    {
+      "id": "E19",
+      "file": "public/assets/audio/sfx/boss_stamp.wav",
+      "seconds": 0.47389583333333335,
+      "peakDbfs": -7,
+      "rmsDbfs": -21.18,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "8f0d081cff19f7dcd2d0a2d477fa9e0e29c358f27995b09df906dcab2856e20b"
+    },
+    {
+      "id": "E20",
+      "file": "public/assets/audio/sfx/boss_command.wav",
+      "seconds": 0.6158333333333333,
+      "peakDbfs": -9,
+      "rmsDbfs": -22.93,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "e37ca9c33528c59dd982b5fd4423636402eb4457dcc7dedf41616e5b0e34eeb7"
+    },
+    {
+      "id": "T01",
+      "file": "public/assets/audio/sfx/wave_start.wav",
+      "seconds": 0.42552083333333335,
+      "peakDbfs": -12,
+      "rmsDbfs": -27.17,
+      "leadingSilenceMs": 0.06,
+      "trailingSilenceMs": 19.98,
+      "sha256": "6d3c2c41596e242b45a12a69246cf2cdbfe4427bb4fdcef7e4f0cc1796341b32"
+    },
+    {
+      "id": "T02",
+      "file": "public/assets/audio/sfx/boss_enter.wav",
+      "seconds": 1.2693958333333333,
+      "peakDbfs": -8,
+      "rmsDbfs": -23.27,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 19.98,
+      "sha256": "87ebd4cdca79071715bf646ea1c68827517fa06c2292f600b222292f1e433527"
+    },
+    {
+      "id": "T03",
+      "file": "public/assets/audio/sfx/boss_phase.wav",
+      "seconds": 0.6702083333333333,
+      "peakDbfs": -9,
+      "rmsDbfs": -19.71,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 19.96,
+      "sha256": "6c267ebc966d0a1f99753aabfc09c109ace92155dd8051697a436b2de172397c"
+    },
+    {
+      "id": "T04",
+      "file": "public/assets/audio/sfx/boss_defeat.wav",
+      "seconds": 1.4770625,
+      "peakDbfs": -7,
+      "rmsDbfs": -22.3,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 19.96,
+      "sha256": "732ca864687bc359a93936fe9f15966718f4968829097e3013a24735e0fb8008"
+    },
+    {
+      "id": "M09",
+      "file": "public/assets/audio/cues/cue_victory_still_alive.wav",
+      "seconds": 2.3651666666666666,
+      "peakDbfs": -10,
+      "rmsDbfs": -22.58,
+      "leadingSilenceMs": 0.15,
+      "trailingSilenceMs": 20,
+      "sha256": "5d87f2e2e219c50da0b949cffe8f5586959dd65082dc589640e292265f3a85be"
+    },
+    {
+      "id": "M10",
+      "file": "public/assets/audio/cues/cue_defeat_record_closed.wav",
+      "seconds": 1.4659583333333333,
+      "peakDbfs": -10,
+      "rmsDbfs": -22.14,
+      "leadingSilenceMs": 0.08,
+      "trailingSilenceMs": 20,
+      "sha256": "a9a918c936a8b6c706ff99887ca291e31efd7529ad7f88a7313fcf9c0925605d"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><title>오디오 통합 검증</title>
+<style>body{margin:0;background:#0a1117;color:#eee;font:14px system-ui}#tools{padding:12px;position:relative;z-index:5000}button,a{margin:3px;padding:8px}pre{white-space:pre-wrap;max-height:210px;overflow:auto}#game{width:960px;height:540px}canvas{display:block}</style>
+<div id="tools">
+  <strong>개발 검증 전용 — 제품 화면에는 포함되지 않음</strong><br>
+  <button id="level">레벨업 검증</button><button data-stage="4">5스테이지 보스</button>
+  <button data-stage="5">6스테이지 전투</button><button data-stage="9">10스테이지 보스</button>
+  <button data-stage="14">15스테이지 보스</button><button id="victory">승리 검증</button><button id="defeat">패배 검증</button>
+  <button id="record">12초 전환 녹음 검증</button><a id="download" hidden download="audio-runtime-review.webm">녹음 다운로드</a>
+  <pre id="status">게임 로딩 중</pre>
+</div><div id="game"></div>
+<script type="module">
+import Phaser from 'phaser';
+import '/src/style.css';
+import {TitleScene} from '/src/scenes/TitleScene.ts';
+import {GameScene} from '/src/scenes/GameScene.ts';
+import {StageEnemySystem} from '/src/enemies/StageEnemySystem.ts';
+import {gameAudio} from '/src/audio/GameAudio.ts';
+import {loadGameFont} from '/src/ui/loadGameFont.ts';
+await loadGameFont();
+const game=new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1280,height:720,scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_HORIZONTALLY,width:1280,height:720},scene:[TitleScene,GameScene]});
+const status=document.querySelector('#status'),history=[];let director,output,analyser,recording=false,peak=0;
+const running=()=>game.scene.isActive('GameScene')?game.scene.getScene('GameScene'):undefined;
+function setStage(stage){
+ const scene=running();if(!scene?.character||scene.defeated||scene.selectingSkill)return;
+ scene.audio.stopEffects();scene.player.body.hp=scene.player.body.maxHp;
+ const system=new StageEnemySystem(scene.world,()=>.37);system.stage=stage;system.initialize(scene.player.body,scene.getViewport());
+ system.onSound=scene.audio.play;system.attacks.onSound=scene.audio.play;scene.enemySystem=system;
+ scene.audio.combat(stage);
+}
+document.querySelectorAll('[data-stage]').forEach(button=>button.onclick=()=>setStage(Number(button.dataset.stage)));
+document.querySelector('#level').onclick=()=>{const scene=running();if(scene?.character&&!scene.defeated)scene.experience.addExperience(scene.experience.requiredExperience);};
+document.querySelector('#victory').onclick=()=>{const scene=running();if(scene?.character){scene.enemySystem.complete=true;scene.selectingSkill=false;}};
+document.querySelector('#defeat').onclick=()=>{const scene=running();if(scene?.character)scene.player.body.hp=0;};
+document.querySelector('#record').onclick=()=>{
+ if(recording||!output?.context||!running()?.character||running().defeated)return;
+ const destination=output.context.createMediaStreamDestination();output.master.connect(destination);
+ const recorder=new MediaRecorder(destination.stream),chunks=[];recording=true;
+ recorder.ondataavailable=event=>{if(event.data.size)chunks.push(event.data);};
+ recorder.onstop=()=>{output.master.disconnect(destination);destination.stream.getTracks().forEach(t=>t.stop());
+  const link=document.querySelector('#download');link.href=URL.createObjectURL(new Blob(chunks,{type:recorder.mimeType}));link.hidden=false;recording=false;};
+ recorder.start();setStage(4);setTimeout(()=>setStage(5),4000);setTimeout(()=>setStage(9),8000);setTimeout(()=>recorder.stop(),12000);
+};
+setInterval(()=>{
+ const scene=game.scene.getScenes(true)[0];if(!scene?.game)return;
+ if(!director){
+  director=gameAudio(scene);output=director.output;
+  const original=output.play.bind(output);
+  output.play=(id,...args)=>{const voice=original(id,...args);if(voice){history.push({id,time:+output.now().toFixed(2)});if(history.length>120)history.shift();}return voice;};
+  if(output.context){analyser=output.context.createAnalyser();output.master.connect(analyser);}
+ }
+ let rms=0;if(analyser){const samples=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(samples);rms=Math.sqrt(samples.reduce((a,x)=>a+x*x,0)/samples.length);peak=Math.max(peak,...samples.map(Math.abs));}
+ status.textContent=JSON.stringify({context:output.context?.state,buffers:output.buffers?.size,music:director.music?.id,
+  requested:director.requested,musicSources:Number(!!director.music&&!director.music.voice.ended)+Number(!!director.fading&&!director.fading.ended),
+  selection:director.selecting,mode:director.mode,effects:director.effects.filter(e=>!e.voice.ended).map(e=>e.group),
+  rms:+rms.toFixed(5),peak:+peak.toFixed(4),recording,recent:history.slice(-9)},null,2);
+},150);
+</script></html>

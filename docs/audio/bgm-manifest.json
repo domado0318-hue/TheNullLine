@@ -1,0 +1,76 @@
+{
+  "purpose": "Temporary original procedural BGM for transition review",
+  "tracks": [
+    {
+      "id": "title",
+      "file": "public/assets/audio/bgm/bgm_title_null_line.ogg",
+      "bpm": 72,
+      "bars": 16,
+      "seconds": 53.33334375,
+      "peakDbfs": -12.249094942577523,
+      "rmsDbfs": -25,
+      "boundaryDifference": 0.001418109178178734
+    },
+    {
+      "id": "combat1",
+      "file": "public/assets/audio/bgm/bgm_combat_01_collection.ogg",
+      "bpm": 100,
+      "bars": 16,
+      "seconds": 38.4,
+      "peakDbfs": -7.349664843042682,
+      "rmsDbfs": -25,
+      "boundaryDifference": 0.0003348022812234211
+    },
+    {
+      "id": "combat2",
+      "file": "public/assets/audio/bgm/bgm_combat_02_sorting.ogg",
+      "bpm": 112,
+      "bars": 16,
+      "seconds": 34.28571875,
+      "peakDbfs": -9.623976458891603,
+      "rmsDbfs": -25,
+      "boundaryDifference": 0.0009711345943727188
+    },
+    {
+      "id": "combat3",
+      "file": "public/assets/audio/bgm/bgm_combat_03_boundary.ogg",
+      "bpm": 124,
+      "bars": 16,
+      "seconds": 30.96775,
+      "peakDbfs": -8.36734008432188,
+      "rmsDbfs": -25,
+      "boundaryDifference": 0.0009874684415475121
+    },
+    {
+      "id": "boss1",
+      "file": "public/assets/audio/bgm/bgm_boss_01_lost_property.ogg",
+      "bpm": 108,
+      "bars": 16,
+      "seconds": 35.5555625,
+      "peakDbfs": -6.788203539093022,
+      "rmsDbfs": -25,
+      "boundaryDifference": 0.0008365444479572587
+    },
+    {
+      "id": "boss2",
+      "file": "public/assets/audio/bgm/bgm_boss_02_closed_counter.ogg",
+      "bpm": 116,
+      "bars": 16,
+      "seconds": 33.1034375,
+      "peakDbfs": -9.63733009909938,
+      "rmsDbfs": -25,
+      "boundaryDifference": 0.0004142912058188686
+    },
+    {
+      "id": "boss3",
+      "file": "public/assets/audio/bgm/bgm_boss_03_erasure.ogg",
+      "bpm": 132,
+      "bars": 16,
+      "seconds": 29.09090625,
+      "peakDbfs": -7.293139091656018,
+      "rmsDbfs": -25,
+      "boundaryDifference": 0.00118320529485337
+    }
+  ],
+  "sourceScript": "scripts/generate-bgm.cjs"
+}
