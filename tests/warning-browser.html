@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><title>공격 전조 화면 검증</title>
+<style>body{margin:0;background:#101820;color:#eee;font:14px system-ui}#tools{position:relative;z-index:5000;padding:8px}button,select{padding:7px;margin:3px}#game{width:100%;height:calc(100vh - 90px)}canvas{display:block}#status{margin:6px}</style>
+<div id="tools">
+  <label>공격 <select id="enemy"><option value="E04">일반 단발</option><option value="E06">일반 산탄</option><option value="B01">보스 1 사격</option><option value="B02">보스 2 사격</option><option value="B03">보스 3 산탄</option><option value="E01">근접 부채꼴</option><option value="E07">착탄 원형</option><option value="E16">빔 직선</option></select></label>
+  <button data-progress="0">0%</button><button data-progress=".25">25%</button><button data-progress=".75">75%</button><button data-progress=".99">99%</button><button data-progress="1.25">발사 후</button><button id="play">전조 재생</button>
+  <p id="status">검증 전용 페이지 — 캐릭터 선택 후 공격을 확인합니다.</p>
+</div><div id="game"></div>
+<script type="module">
+import Phaser from 'phaser';
+import {GameScene} from '/src/scenes/GameScene.ts';
+import {StageEnemySystem} from '/src/enemies/StageEnemySystem.ts';
+import {enemyAttacks,bossAttacks} from '/src/config/enemyAttacks.ts';
+import {loadGameFont} from '/src/ui/loadGameFont.ts';
+await loadGameFont();
+const game=new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1280,height:720,scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},scene:[GameScene]});
+const status=document.querySelector('#status'),select=document.querySelector('#enemy');
+let playback;
+function setup(){
+  cancelAnimationFrame(playback);
+  const scene=game.scene.getScene('GameScene');
+  if(!scene.character)return;
+  scene.selectingSkill=true;
+  const player=scene.player.body;player.hp=player.maxHp;player.invulnerableSeconds=0;
+  const system=new StageEnemySystem(scene.world,()=>.37);
+  system.nextId=scene.enemySystem.nextId;
+  scene.enemySystem=system;
+  const id=select.value,e=system.create(id,{x:player.x-260,y:player.y+60});
+  e.age=2;system.enemies.push(e);
+  const spec=id.startsWith('B')?bossAttacks[id].shot:enemyAttacks[id];
+  system.beginAction(e,spec,player,scene.getViewport());
+  return {scene,system,e,player,seconds:spec.windup||spec.delay};
+}
+function advance(f,seconds){
+  for(let t=0;t<seconds-1e-8;t+=1/120){
+    const step=Math.min(1/120,seconds-t);
+    if(f.e.action)f.system.updateAction(f.e,step,f.player,f.scene.getViewport());
+    f.system.attacks.update(step,f.player,f.system.enemies,f.scene.world,d=>d);
+  }
+  f.scene.renderActors();
+  status.textContent=`${select.selectedOptions[0].text} · 경고 ${f.system.attacks.hazards.length}개 · 탄환 ${f.system.attacks.projectiles.length}개 · HP ${f.player.hp}`;
+}
+function preview(progress){const f=setup();if(f)advance(f,f.seconds*progress);}
+document.querySelectorAll('[data-progress]').forEach(b=>b.onclick=()=>preview(Number(b.dataset.progress)));
+select.onchange=()=>preview(.75);
+document.querySelector('#play').onclick=()=>{
+  const f=setup();if(!f)return;
+  let last=performance.now(),age=0;
+  function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;age+=dt;advance(f,dt);if(age<f.seconds+1)playback=requestAnimationFrame(tick);}
+  playback=requestAnimationFrame(tick);
+};
+</script></html>

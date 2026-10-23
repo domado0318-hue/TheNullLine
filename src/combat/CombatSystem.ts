@@ -9,6 +9,7 @@ import { segmentRoundedRectangleHit } from '../world/intersections';
 import { clearAttackLine, effectiveAttackRange, swordSweep, validateWeapon } from './weaponRules';
 import { assertNonNegative } from '../config/validate';
 import type { Combatant, Faction } from './types';
+import { receivedDamage } from './types';
 
 export interface SwordAttack extends Point {
   id: number;
@@ -37,11 +38,13 @@ export class CombatSystem {
   readonly bullets: BulletAttack[] = [];
   private readonly cooldowns = new Map<number, number>();
   private nextAttackId = 1;
-  private readonly playerWeapon: WeaponKind;
+  private readonly playerWeapon: WeaponKind | undefined;
+  private readonly defendPlayer?: (damage: number) => number;
 
-  constructor(playerWeapon: WeaponKind) {
-    validateWeapon(getPlayerWeapon(playerWeapon));
+  constructor(playerWeapon: WeaponKind | undefined, defendPlayer?: (damage: number) => number) {
+    if (playerWeapon) validateWeapon(getPlayerWeapon(playerWeapon));
     this.playerWeapon = playerWeapon;
+    this.defendPlayer = defendPlayer;
   }
 
   update(deltaSeconds: number, player: Combatant, enemies: readonly Enemy[], world: CollisionWorld, viewport: Viewport): void {
@@ -63,13 +66,14 @@ export class CombatSystem {
       this.cooldowns.set(actor.id, Math.max(0, (this.cooldowns.get(actor.id) ?? 0) - deltaSeconds));
     }
 
-    if (player.hp > 0) {
+    if (player.hp > 0 && this.playerWeapon) {
       const weapon = getPlayerWeapon(this.playerWeapon);
       const nearest = this.nearestTarget(player, enemies.filter((enemy) => enemy.hp > 0
         && (weapon.kind !== 'bullet' || isInViewport(enemy, enemy.size, viewport))), weapon.attackRange);
       if (weapon.kind === 'sword' || nearest) this.tryAttack(player, weapon, nearest);
     }
     for (const enemy of enemies) {
+      if (enemy.archetype) continue; // 문서 기반 적은 전조와 개별 패턴으로 공격한다.
       const weapon = getEnemyWeapon(enemy.kind);
       if (enemy.hp > 0 && player.hp > 0 && enemy.state === 'attack'
         && (weapon.kind !== 'bullet' || isInViewport(enemy, enemy.size, viewport))
@@ -122,7 +126,8 @@ export class CombatSystem {
 
   private hit(target: Combatant, faction: Faction, damage: number, from: Point): boolean {
     if (target.faction === faction || target.hp <= 0 || target.invulnerableSeconds > 0) return false;
-    target.hp = Math.max(0, target.hp - damage);
+    const appliedDamage = target.faction === 'player' && this.defendPlayer ? this.defendPlayer(damage) : receivedDamage(target, from, damage);
+    target.hp = Math.max(0, target.hp - appliedDamage);
     target.hitFlashSeconds = combatConfig.hitFlashSeconds;
     target.invulnerableSeconds = combatConfig.invulnerabilitySeconds[target.faction];
     const length = distance(target, from);
@@ -182,7 +187,7 @@ export class CombatSystem {
         const t = obstacleBulletHit(from, to, weapon.radius, obstacle);
         if (t !== undefined && t <= firstHit) { firstHit = t; victim = undefined; }
       }
-      for (const axis of ['x', 'y'] as const) {
+      for (const axis of world.unbounded ? [] : ['x', 'y'] as const) {
         const max = (axis === 'x' ? world.width : world.height) - weapon.radius;
         const delta = to[axis] - from[axis];
         if (from[axis] < weapon.radius || from[axis] > max) { firstHit = 0; victim = undefined; }
