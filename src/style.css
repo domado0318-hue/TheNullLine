@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Yangjin';
+  src: url('/assets/fonts/yangjin-v0.93.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
   background: #0b0d14;

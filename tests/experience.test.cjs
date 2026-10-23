@@ -205,15 +205,18 @@ function displayHarness() {
     setScrollFactor(value) { this.scrollFactor = value; return this; },
     setDepth(value) { this.depth = value; return this; },
     setOrigin(value) { this.origin = value; return this; },
+    setDisplaySize(width, height) { Object.assign(this, { width, height }); return this; },
     setText(value) { this.text = value; return this; },
     setPosition(x, y) { Object.assign(this, { x, y }); return this; },
     destroy() { this.destroyed = true; },
   });
   const graphics = Object.assign(object(), {
-    clear() { fills.length = 0; return this; }, fillStyle() { return this; }, lineStyle() { return this; },
-    fillRect(x, y, width, height) { fills.push({ x, y, width, height }); return this; }, strokeRect() { return this; },
+    clear() { fills.length = 0; return this; }, fillStyle(color) { this.color = color; return this; }, lineStyle() { return this; },
+    fillRect(x, y, width, height) { fills.push({ x, y, width, height, color: this.color }); return this; }, strokeRect() { return this; },
+    fillCircle() { return this; },
   });
   return { texts, stars, fills, graphics, scene: { add: {
+    image: () => object(),
     graphics: () => graphics,
     text(x, y) { const view = Object.assign(object(), { x, y }); texts.push(view); return view; },
     star(x, y, points, innerRadius, outerRadius, color) {
@@ -232,20 +235,24 @@ test('HUD keeps all parts fixed to the screen and synchronizes level, central te
   assert.equal(ui.graphics.scrollFactor, 0);
   assert(ui.texts.every(text => text.scrollFactor === 0));
   assert.equal(ui.texts[0].text, `${config.levelPrefix} 1`);
-  assert.equal(ui.texts[1].text, `5 / ${system.requiredExperience}`);
+  assert.equal(ui.texts[1].text, `EXP 5 / ${system.requiredExperience}`);
   assert.equal(ui.texts[1].origin, 0.5);
-  assert.equal(ui.texts[1].x, config.x + config.barWidth / 2);
-  assert.equal(ui.fills[1].width, config.barWidth * 5 / system.requiredExperience);
+  assert.equal(ui.texts[1].x, config.x + uiConfig.railway.hudPadding + config.levelWidth + config.barWidth / 2);
+  const fill = () => ui.fills.find(rect => rect.color === config.fillColor);
+  assert.equal(ui.texts[1].y, fill().y + fill().height / 2, 'EXP label sits inside the bar');
+  assert.equal(config.y, uiConfig.encounterHud.y, 'EXP panel aligns with the top row after removing HUD HP');
+  assert.equal(ui.texts[0].y, config.y + uiConfig.railway.hudPadding + config.barHeight / 2);
+  assert.equal(fill().width, config.barWidth * 5 / system.requiredExperience);
   system.addExperience(system.requiredExperience - 5);
   hud.update(system);
   assert.equal(ui.texts[0].text, `${config.levelPrefix} 2`);
-  assert.equal(ui.texts[1].text, `0 / ${system.requiredExperience}`);
-  assert.equal(ui.fills[1].width, 0);
+  assert.equal(ui.texts[1].text, `EXP 0 / ${system.requiredExperience}`);
+  assert.equal(fill().width, 0);
   const reset = new ExperienceSystem();
   hud.update(reset);
   assert.equal(reset.drops.length, 0);
   assert.equal(ui.texts[0].text, `${config.levelPrefix} 1`);
-  assert.equal(ui.texts[1].text, `0 / ${reset.requiredExperience}`);
+  assert.equal(ui.texts[1].text, `EXP 0 / ${reset.requiredExperience}`);
 });
 
 test('Renderer creates stars once, follows drop positions, and destroys collected icons', () => {

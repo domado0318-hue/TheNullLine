@@ -10,11 +10,11 @@ export class HealthBar {
     this.graphics = scene.add.graphics().setDepth(uiConfig.healthBar.depth);
   }
 
-  update(actor: Combatant): void {
+  update(actor: Combatant, topOffset = actor.size / 2): void {
     const config = uiConfig.healthBar;
     const width = actor.size + config.widthPadding;
     const x = actor.x - width / 2;
-    const y = actor.y - actor.size / 2 - config.gap - config.height;
+    const y = actor.y - topOffset - config.gap - config.height;
     this.graphics.clear();
     this.graphics.fillStyle(config.backgroundColor).fillRect(x, y, width, config.height);
     this.graphics.fillStyle(actor.faction === 'player' ? config.playerColor : config.enemyColor);
