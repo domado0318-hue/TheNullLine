@@ -330,7 +330,7 @@ export class EnemySystem {
       };
       if (distance(enemy, target) <= navigationConfig.waypointDistance) enemy.direction *= -1;
     } else {
-      enemy.angle += enemyConfig.patrol.speed / enemy.patrolRadius * deltaSeconds;
+      enemy.angle += enemyConfig.patrol.speed * (enemy.movementMultiplier ?? 1) / enemy.patrolRadius * deltaSeconds;
       target = {
         x: enemy.anchor.x + Math.cos(enemy.angle) * enemy.patrolRadius,
         y: enemy.anchor.y + Math.sin(enemy.angle) * enemy.patrolRadius,
@@ -362,7 +362,7 @@ export class EnemySystem {
     }
     const length = distance(enemy, goal);
     if (!length) return;
-    const travel = Math.min(speed * deltaSeconds, length);
+    const travel = Math.min(speed * (enemy.movementMultiplier ?? 1) * deltaSeconds, length);
     const angle = Math.atan2(goal.y - enemy.y, goal.x - enemy.x);
     const start = { ...enemy };
     const primary = { ...enemy };

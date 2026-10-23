@@ -1,6 +1,7 @@
 import { experienceConfig } from '../config/experience';
 import type { EnemyExperienceCategory, ExperienceConfig } from '../config/experience';
 import type { Point } from '../world/geometry';
+import type { SoundEmitter } from '../config/audio';
 
 export interface ExperienceDrop extends Point {
   id: number;
@@ -40,6 +41,7 @@ function validateConfig(config: ExperienceConfig): void {
 }
 
 export class ExperienceSystem {
+  onSound?: SoundEmitter;
   readonly drops: ExperienceDrop[] = [];
   private nextDropId = 1;
   private currentLevel = 1;
@@ -84,7 +86,11 @@ export class ExperienceSystem {
     }
   }
 
-  update(deltaSeconds: number, player: Point): void {
+  attractWithin(player: Point, radius: number): void {
+    for (const drop of this.drops) if (Math.hypot(drop.x - player.x, drop.y - player.y) <= radius) drop.attracted = true;
+  }
+
+  update(deltaSeconds: number, player: Point, attractionRadius = this.config.pickup.attractionRadius): void {
     if (!Number.isFinite(deltaSeconds) || deltaSeconds < 0) throw new Error('experience.deltaSeconds: 0 이상의 유한수가 필요합니다.');
     const pickup = this.config.pickup;
     for (let index = this.drops.length - 1; index >= 0; index--) {
@@ -92,7 +98,7 @@ export class ExperienceSystem {
       const dx = player.x - drop.x;
       const dy = player.y - drop.y;
       const length = Math.hypot(dx, dy);
-      if (length <= pickup.attractionRadius) drop.attracted = true;
+      if (length <= attractionRadius) drop.attracted = true;
       if (!drop.attracted) continue;
       const nextSpeed = Math.min(pickup.maximumSpeed, drop.speed + pickup.acceleration * deltaSeconds);
       // Integrate acceleration, including the part of the frame at maximum speed.
@@ -101,6 +107,7 @@ export class ExperienceSystem {
       drop.speed = nextSpeed;
       if (length <= pickup.collectionRadius || travel >= length - pickup.collectionRadius) {
         this.addExperience(drop.value);
+        this.onSound?.('xp_pickup');
         this.drops.splice(index, 1);
       } else if (length > 0) {
         // Pickups are nonphysical and can pass scenery while being attracted.

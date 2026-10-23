@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><title>캐릭터 성장 연결 검증</title>
+<style>body{margin:0;background:#101820;color:#eee;font:14px system-ui}#tools{position:relative;z-index:5000;padding:8px}button,select{padding:7px;margin:3px}#game{height:calc(100vh - 110px)}canvas{display:block}#status{margin:4px}</style>
+<div id="tools">
+  <label>성장 <select id="case"><option value="mechanic">정비공 · 강화 강타</option><option value="normal">정비공 · 일반 공격 비교</option><option value="signal">신호 기술자 · 분기와 과부하</option><option value="relay">신호 기술자 · 비콘 중계</option><option value="carrier">운반원 · 함정과 유인</option></select></label>
+  <button data-time=".08">발동 직후</button><button data-time=".3">0.3초</button><button data-time=".6">0.6초</button><button data-time="1.5">1.5초</button><button data-time="3">3초</button><button data-time="5">5초</button><button id="play">재생</button><button id="card">스킬 카드</button>
+  <p id="status">캐릭터를 선택한 뒤 검사합니다. 실제 공격·적 AI·렌더러를 사용하는 검증 전용 화면입니다.</p>
+</div><div id="game"></div>
+<script type="module">
+import Phaser from 'phaser';
+import {GameScene} from '/src/scenes/GameScene.ts';
+import {CharacterCombat} from '/src/combat/CharacterCombat.ts';
+import {StageEnemySystem} from '/src/enemies/StageEnemySystem.ts';
+import {ExperienceSystem} from '/src/experience/ExperienceSystem.ts';
+import {skills} from '/src/config/skills.ts';
+import {showSkillSelection} from '/src/ui/GameOverlay.ts';
+import {loadGameFont} from '/src/ui/loadGameFont.ts';
+await loadGameFont();
+class Preview extends GameScene { update() {} }
+const game=new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1280,height:720,scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},scene:[Preview]});
+const select=document.querySelector('#case'),status=document.querySelector('#status');let playback,origin,current;
+function setup(){
+  cancelAnimationFrame(playback);
+  const scene=game.scene.getScene('GameScene');if(!scene.character)return;
+  scene.encounterTransition?.update(10000);scene.encounterTransition?.update(10000);
+  const p=scene.player.body;origin??={x:p.x,y:p.y};Object.assign(p,origin);
+  const mode=select.value,id=mode==='normal'?'mechanic':mode==='relay'?'signal':mode;
+  const system=new StageEnemySystem(scene.world,()=>.37);system.nextId=scene.enemySystem.nextId;scene.enemySystem=system;
+  let roll=.99,level=1;const c=new CharacterCombat(id,p,()=>roll),xp=new ExperienceSystem();scene.character=c;scene.player.setCharacter(id);
+  function upgrade(skill,rank=3){while(c.progression.level(skill)<rank){const eligible=skills[id].filter(s=>c.progression.level(s.id)<5);roll=(eligible.findIndex(s=>s.id===skill)+.01)/eligible.length;c.progression.observeLevel(++level);const offer=c.progression.offer();c.choose(offer.token,0,xp);}roll=.99;}
+  const offsets=id==='mechanic'?[[64,0],[-120,0],[0,140]]:id==='signal'?(mode==='relay'?[[100,0],[320,0]]:[[100,0],[200,0],[300,0],[100,120],[100,-120]]):[[140,70],[-160,0],[200,-100]];
+  offsets.forEach(([x,y],i)=>{const e=system.create('E01',{x:p.x+x,y:p.y+y});e.hp=e.maxHp=200;e.age=2;e.cooldown=100;system.enemies.push(e);});
+  if(id==='mechanic'){upgrade(9);upgrade(13,1);c.attacks=mode==='normal'?0:3;}
+  if(id==='signal'){for(const skill of [8,9,10])upgrade(skill);if(mode==='relay'){
+    const first=system.enemies[0];first.x=origin.x+210;c.mainTimer=100;c.auxiliaryTimers.set(9,0);c.prepare(0,p,system.enemies);c.update(0,scene.world,scene.getViewport());first.x=origin.x+100;c.mainTimer=0;
+  }}
+  if(id==='carrier'){
+    for(const skill of [7,8,9,10,12])upgrade(skill,5);
+    c.mainTimer=0;for(const skill of [7,8,9])c.auxiliaryTimers.set(skill,0);
+    c.prepare(0,p,system.enemies);c.update(0,scene.world,scene.getViewport());
+    p.x-=100;c.mainTimer=0;c.prepare(0,p,system.enemies);c.update(0,scene.world,scene.getViewport());p.x=origin.x+240;
+  }else{c.prepare(0,p,system.enemies);c.update(0,scene.world,scene.getViewport());}
+  c.mainTimer=100;c.auxiliaryTimers.clear();
+  current={scene,c,system,id,mode,age:0};return current;
+}
+function render(f,age){
+  while(f.age<age-1e-8){const dt=Math.min(1/60,age-f.age);f.c.prepare(dt,f.c.player,f.system.enemies);
+    if(f.id==='carrier')f.system.update(dt,f.c.player,f.scene.getViewport(),f.c.lures);
+    f.c.update(dt,f.scene.world,f.scene.getViewport());f.age+=dt;
+  }
+  f.scene.renderActors();f.scene.characterRenderer.sync(f.c);
+  status.textContent=`${select.selectedOptions[0].text} · ${f.age.toFixed(2)}초 · 적 HP ${f.system.enemies.map(e=>e.hp.toFixed(1)).join(' / ')} · 함정 ${f.c.mines.length} · 미끼 ${f.c.lures.length}`;
+}
+function preview(age){const f=setup();if(f)render(f,age);}
+select.onchange=()=>preview(.08);
+document.querySelectorAll('[data-time]').forEach(b=>b.onclick=()=>preview(Number(b.dataset.time)));
+document.querySelector('#play').onclick=()=>{const f=setup();if(!f)return;let last=performance.now();function tick(now){render(f,f.age+Math.min(.05,(now-last)/1000)*.5);last=now;if(f.age<5)playback=requestAnimationFrame(tick);}playback=requestAnimationFrame(tick);};
+document.querySelector('#card').onclick=()=>{const f=setup();if(!f)return;render(f,.08);const fresh=new CharacterCombat(f.id,{...f.c.player});showSkillSelection(f.scene,fresh,{token:1,choices:(f.id==='mechanic'?[9]:[8,9,10]).map(id=>({kind:'skill',id}))},()=>{});};
+</script></html>

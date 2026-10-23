@@ -1,4 +1,6 @@
 export const combatConfig = {
+  criticalChance: 0.05, // 플레이어 공격의 기본 치명타 확률 (0~1, 적중마다 독립 판정)
+  criticalMultiplier: 1.5, // 기본 치명타 피해 배율 (1 이상)
   hitFlashSeconds: 0.18, // 피격 점멸 효과를 유지하는 시간 (초)
   flashIntervalSeconds: 0.045, // 피격 색상과 기본 색상을 번갈아 표시할 간격 (초)
   hitColor: 0xff2424, // 피격 시 점멸 색상 (0xRRGGBB)
