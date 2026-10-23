@@ -4,10 +4,10 @@ import { segmentCircleHit, segmentRoundedRectangleHit, segmentSquareHit } from '
 
 export interface Point { x: number; y: number }
 export interface Body extends Point { id: number; size: number }
-export interface Obstacle extends Point { shape: 'rectangle' | 'circle'; size: number }
-export interface WorldSize { width: number; height: number }
+export interface Obstacle extends Point { shape: 'rectangle' | 'circle'; size: number; width?: number; height?: number }
+export interface WorldSize { width: number; height: number; unbounded?: boolean; originX?: number; originY?: number }
 export interface Viewport extends Point { width: number; height: number }
-export interface CollisionWorld extends WorldSize { obstacles: readonly Obstacle[] }
+export interface CollisionWorld extends WorldSize { obstacles: readonly Obstacle[]; revision?: number }
 
 export const distance = (a: Point, b: Point): number => Math.hypot(a.x - b.x, a.y - b.y);
 export const clamp = (value: number, min: number, max: number): number => Math.max(min, Math.min(max, value));
@@ -25,7 +25,8 @@ export function overlapsSquare(a: Point, aSize: number, b: Point, bSize: number)
 }
 
 export function overlapsObstacle(point: Point, size: number, obstacle: Obstacle): boolean {
-  if (obstacle.shape === 'rectangle') return overlapsSquare(point, size, obstacle, obstacle.size);
+  if (obstacle.shape === 'rectangle') return Math.abs(point.x - obstacle.x) < (size + (obstacle.width ?? obstacle.size)) / 2
+    && Math.abs(point.y - obstacle.y) < (size + (obstacle.height ?? obstacle.size)) / 2;
   const half = size / 2;
   const nearestX = clamp(obstacle.x, point.x - half, point.x + half);
   const nearestY = clamp(obstacle.y, point.y - half, point.y + half);
@@ -36,8 +37,9 @@ export function canOccupy(
   point: Point, size: number, world: CollisionWorld, blockers: readonly Body[] = [],
 ): boolean {
   const half = size / 2;
-  return point.x >= half && point.y >= half
-    && point.x <= world.width - half && point.y <= world.height - half
+  return Number.isFinite(point.x) && Number.isFinite(point.y)
+    && (world.unbounded || (point.x >= half && point.y >= half
+    && point.x <= world.width - half && point.y <= world.height - half))
     && !world.obstacles.some((obstacle) => overlapsObstacle(point, size, obstacle))
     && !blockers.some((body) => overlapsSquare(point, size, body, body.size));
 }
@@ -48,8 +50,8 @@ export function moveBody(body: Body, dx: number, dy: number, world: CollisionWor
   const steps = Math.max(1, Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) / navigationConfig.collisionStep));
   const start = { x: body.x, y: body.y };
   for (let step = 0; step < steps; step++) {
-    const x = clamp(body.x + dx / steps, body.size / 2, world.width - body.size / 2);
-    const y = clamp(body.y + dy / steps, body.size / 2, world.height - body.size / 2);
+    const x = world.unbounded ? body.x + dx / steps : clamp(body.x + dx / steps, body.size / 2, world.width - body.size / 2);
+    const y = world.unbounded ? body.y + dy / steps : clamp(body.y + dy / steps, body.size / 2, world.height - body.size / 2);
     if (canOccupy({ x, y }, body.size, world, blockers)) {
       body.x = x;
       body.y = y;
@@ -66,7 +68,8 @@ export function lineIsClear(
 ): boolean {
   const half = size / 2;
   for (const point of [from, to]) {
-    if (point.x < half || point.y < half || point.x > world.width - half || point.y > world.height - half) return false;
+    if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) return false;
+    if (!world.unbounded && (point.x < half || point.y < half || point.x > world.width - half || point.y > world.height - half)) return false;
   }
   // Physical bodies may slide along a touching surface. Projectiles include tangency.
   const epsilon = shape === 'square' ? 1e-7 : 0;
@@ -74,7 +77,9 @@ export function lineIsClear(
     ? segmentRoundedRectangleHit(from, to, center, targetHalf, targetHalf, half)
     : segmentSquareHit(from, to, center, Math.max(0, targetHalf + half - epsilon));
   for (const obstacle of world.obstacles) {
-    const hit = obstacle.shape === 'rectangle' ? hitsSquare(obstacle, obstacle.size / 2)
+    const hit = obstacle.shape === 'rectangle' ? segmentRoundedRectangleHit(from, to, obstacle,
+      Math.max(0, (obstacle.width ?? obstacle.size) / 2 + (shape === 'square' ? half - epsilon : 0)),
+      Math.max(0, (obstacle.height ?? obstacle.size) / 2 + (shape === 'square' ? half - epsilon : 0)), shape === 'circle' ? half : 0)
       : shape === 'circle' ? segmentCircleHit(from, to, obstacle, obstacle.size / 2 + half)
         : segmentRoundedRectangleHit(from, to, obstacle, half, half, Math.max(0, obstacle.size / 2 - epsilon));
     if (hit !== undefined) return false;

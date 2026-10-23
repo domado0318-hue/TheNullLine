@@ -57,8 +57,8 @@ function fill(system, body) {
 test('configs preserve existing visuals, speed, obstacle ratios and distinct enemy colors', () => {
   assert.equal(playerConfig.size, 48);
   assert.equal(playerConfig.movementSpeed, 300);
-  assert.equal(worldConfig.width, 3000);
-  assert.equal(worldConfig.height, 3000);
+  assert(worldConfig.width >= 1280 * 2 && worldConfig.width >= worldConfig.height * 2, 'platform has a long horizontal combat lane');
+  assert(worldConfig.height >= 720, 'platform retains room for vertical evasion');
   assert.equal(worldConfig.wallThickness, 16);
   const colors = [playerConfig.color, worldConfig.gridColor, worldConfig.wallColor, obstacleConfig.rectangleColor, obstacleConfig.circleColor, ...Object.values(enemyConfig.colors)];
   assert.equal(new Set(colors).size, colors.length);

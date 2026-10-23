@@ -64,8 +64,8 @@ export class NavigationGrid {
 
   private point(id: number): Point {
     return {
-      x: (id % this.columns + 0.5) * navigationConfig.cellSize,
-      y: (Math.floor(id / this.columns) + 0.5) * navigationConfig.cellSize,
+      x: (this.world.originX ?? 0) + (id % this.columns + 0.5) * navigationConfig.cellSize,
+      y: (this.world.originY ?? 0) + (Math.floor(id / this.columns) + 0.5) * navigationConfig.cellSize,
     };
   }
 
@@ -80,8 +80,8 @@ export class NavigationGrid {
       return occupancy[id] === 1;
     };
     const nearest = (position: Point): number => {
-      const centerX = Math.floor(position.x / navigationConfig.cellSize);
-      const centerY = Math.floor(position.y / navigationConfig.cellSize);
+      const centerX = Math.floor((position.x - (this.world.originX ?? 0)) / navigationConfig.cellSize);
+      const centerY = Math.floor((position.y - (this.world.originY ?? 0)) / navigationConfig.cellSize);
       let best = -1;
       let bestDistance = Infinity;
       const radius = navigationConfig.nearestCellSearchRadius;

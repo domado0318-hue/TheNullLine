@@ -5,7 +5,7 @@ export { segmentCircleHit, segmentSquareHit } from '../world/intersections';
 export function obstacleBulletHit(from: Point, to: Point, radius: number, obstacle: Obstacle): number | undefined {
   return obstacle.shape === 'circle'
     ? segmentCircleHit(from, to, obstacle, obstacle.size / 2 + radius)
-    : segmentRoundedRectangleHit(from, to, obstacle, obstacle.size / 2, obstacle.size / 2, radius);
+    : segmentRoundedRectangleHit(from, to, obstacle, (obstacle.width ?? obstacle.size) / 2, (obstacle.height ?? obstacle.size) / 2, radius);
 }
 
 // Separating axis test: rotated blade rectangle against an axis-aligned actor square.
