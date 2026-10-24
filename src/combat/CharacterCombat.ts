@@ -4,11 +4,12 @@ import type { CharacterId } from '../config/characters';
 import { auxiliaryWeapons, characterWeapons as tuning } from '../config/characterWeapons';
 import type { AuxiliaryConfig } from '../config/characterWeapons';
 import { combatConfig } from '../config/combat';
+import { effectMotion } from '../config/effects';
 import { criticalSkillIds } from '../config/skills';
 import { assertInteger, assertNonNegative, assertPositive } from '../config/validate';
 import { SkillProgression } from '../experience/SkillProgression';
 import type { ExperienceSystem } from '../experience/ExperienceSystem';
-import type { Combatant, LureTarget } from './types';
+import type { AttackVisualEvent, Combatant, LureTarget } from './types';
 import { receivedDamage } from './types';
 import type { Point, CollisionWorld, Viewport } from '../world/geometry';
 import { distance, isInViewport, lineIsClear, moveBody } from '../world/geometry';
@@ -31,13 +32,14 @@ export interface CharacterSwing { angle: number; age: number; radius: number; ra
 export interface CharacterMine extends Point { age: number; lifetime: number; radius: number; payload: Payload; skill?: number; triggerRange?: number }
 export interface CharacterShot extends Point { age: number; vx: number; vy: number; config: AuxiliaryConfig; payload: Payload; hitIds: Set<number> }
 export interface CharacterZone extends Point { age: number; tick: number; skill: number; config: AuxiliaryConfig; payload: Payload }
-export interface CharacterEffect extends Point { radius: number; remaining: number; to?: Point; angle?: number; cross?: boolean }
+export interface CharacterEffect extends Point { radius: number; remaining: number; to?: Point; angle?: number; cross?: boolean; delaySeconds?: number }
 interface Status { value: number; remaining: number }
 interface Shield extends Status { source: string }
 export interface DamageHit { target: Combatant; amount: number; critical: boolean }
 
 /** Character attacks and skill state are independent of Phaser and the selection UI. */
 export class CharacterCombat {
+  onAttackVisual?: (event: AttackVisualEvent) => void;
   onSound?: SoundEmitter;
   onDamage?: (hit: DamageHit) => void;
   private readonly random: () => number;
@@ -277,6 +279,7 @@ export class CharacterCombat {
       const mainMines = this.mines.filter(mine => !mine.skill);
       if (mainMines.length >= maximum) this.mines.splice(this.mines.indexOf(mainMines[0]), 1);
       this.mines.push({ x: this.player.x, y: this.player.y, age: 0, lifetime: this.v(5, undefined, true) || config.lifetime, radius: this.v(3) || config.blastRadius, payload });
+      this.onAttackVisual?.({ ownerId: this.player.id, kind: 'mine', angle: this.direction, strong: charged });
       this.onSound?.('carrier_place', this.player);
       return true;
     }
@@ -294,6 +297,7 @@ export class CharacterCombat {
       const payload = { ...this.payload(this.player.attackDamage * (1 + bonus / 100), true, strong ? this.v(5) || config.strongKnockback : config.knockback), strong, charged };
       this.swings.push({ angle: Math.atan2(target.y - this.player.y, target.x - this.player.x), age: 0, radius: config.radius + this.v(3), range,
         length: config.length + extension * 2, empowered: extension > 0, payload, hitIds: new Set() });
+      this.onAttackVisual?.({ ownerId: this.player.id, kind: 'blade', angle: Math.atan2(target.y - this.player.y, target.x - this.player.x), strong: strong || charged });
       this.onSound?.('mechanic_cutter', this.player);
       return true;
     }
@@ -320,6 +324,7 @@ export class CharacterCombat {
     const crowd = this.valid(first, config.crowdRadius).length >= config.crowdCount;
     const bonus = this.v(1) + (crowd ? this.v(11) : 0) + (path.length === 1 ? this.v(12) : 0);
     const payload = { ...this.payload(this.player.attackDamage * (1 + bonus / 100), true), charged: this.useCharge() };
+    this.onAttackVisual?.({ ownerId: this.player.id, kind: 'chain', angle: Math.atan2(first.y - this.player.y, first.x - this.player.x), strong: payload.charged ?? false });
     // Fix branch targets before damage, deaths or knockback can alter this discharge.
     const branches = this.v(8) ? this.valid(first, range).filter(enemy => !path.includes(enemy)).slice(0, config.branchCount) : [];
     this.onSound?.('signal_discharge', this.player);
@@ -328,13 +333,13 @@ export class CharacterCombat {
     for (let i = 0; i < path.length; i++) {
       if (i === 1) this.onSound?.('signal_chain', path[i]);
       const relay = relays.get(path[i]);
-      if (relay) { this.arc(from, relay); from = relay; }
-      this.arc(from, path[i]);
+      if (relay) { this.arc(from, relay, i * effectMotion.chainStepSeconds); from = relay; }
+      this.arc(from, path[i], i * effectMotion.chainStepSeconds);
       this.hit(path[i], payload, from, payload.damage * retention ** i);
       from = path[i];
     }
     for (const target of branches) {
-      this.arc(first, target);
+      this.arc(first, target, path.length * effectMotion.chainStepSeconds);
       this.hit(target, payload, first, payload.damage * this.v(8) / 100);
     }
     if (this.v(10) && path.length >= config.overloadMinimum) {
@@ -346,8 +351,8 @@ export class CharacterCombat {
     return true;
   }
 
-  private arc(from: Point, to: Point): void {
-    this.effects.push({ x: from.x, y: from.y, to: { x: to.x, y: to.y }, radius: 0, remaining: tuning.effectDuration });
+  private arc(from: Point, to: Point, delaySeconds = 0): void {
+    this.effects.push({ x: from.x, y: from.y, to: { x: to.x, y: to.y }, radius: 0, remaining: tuning.effectDuration + delaySeconds, delaySeconds });
   }
 
   private updateSwings(delta: number): void {
@@ -424,8 +429,10 @@ export class CharacterCombat {
       this.mines.push({ x: this.player.x, y: this.player.y, age: 0, lifetime: config.lifetime,
         radius: config.radius + (this.v(3) ? this.v(3) - tuning.carrier.blastRadius : 0),
         triggerRange: config.range, skill: id, payload });
+      this.onAttackVisual?.({ ownerId: this.player.id, kind: 'mine', angle: this.direction, strong: false });
     } else if (config.kind === 'slash' && target) {
       const angle = Math.atan2(target.y - this.player.y, target.x - this.player.x);
+      this.onAttackVisual?.({ ownerId: this.player.id, kind: 'slash', angle, strong: payload.charged ?? false });
       for (const enemy of this.valid(this.player, config.range).filter(enemy => this.inCone(enemy, angle))) {
         this.hit(enemy, payload, this.player);
       }
@@ -433,6 +440,7 @@ export class CharacterCombat {
         remaining: tuning.effectDuration, angle, cross: true });
     } else if (config.kind === 'projectile' && target) {
       const angle = Math.atan2(target.y - this.player.y, target.x - this.player.x);
+      this.onAttackVisual?.({ ownerId: this.player.id, kind: 'projectile', angle, strong: payload.charged ?? false });
       const gap = this.player.size / 2 + config.radius + tuning.projectileGap;
       this.shots.push({ x: this.player.x + Math.cos(angle) * gap, y: this.player.y + Math.sin(angle) * gap,
         vx: Math.cos(angle) * config.speed, vy: Math.sin(angle) * config.speed, age: 0, config: { ...config }, payload, hitIds: new Set() });

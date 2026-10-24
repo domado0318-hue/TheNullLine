@@ -37,8 +37,13 @@ export class CharacterRenderer {
       fx.draw('mine', mine.x, mine.y, size, size, 0, art.warningAlpha + (1 - art.warningAlpha) * ready, art.groundDepth);
       if (armed) fx.draw('shield', mine.x, mine.y, size, size, mine.age, art.warningAlpha + Math.sin(mine.age * art.pulseHz * Math.PI * 2) * art.pulseAlpha, art.groundDepth);
     }
-    for (const shot of combat.shots) fx.draw(combat.character === 'mechanic' ? (shot.config.pierce > 1 ? 'saw' : 'rivet') : combat.character === 'signal' ? 'bolt' : 'capsule',
-      shot.x, shot.y, shot.config.radius * 2 * art.projectileScale, shot.config.radius * 2 * art.projectileScale, Math.atan2(shot.vy, shot.vx));
+    for (const shot of combat.shots) {
+      const angle=Math.atan2(shot.vy,shot.vx),tail=motion.bulletTrailPixels;
+      fx.segment({x:shot.x-Math.cos(angle)*tail,y:shot.y-Math.sin(angle)*tail},shot,
+        combat.character==='signal'?motion.playerTrailColor:ground.metal,2,motion.bulletTrailAlpha);
+      fx.draw(combat.character === 'mechanic' ? (shot.config.pierce > 1 ? 'saw' : 'rivet') : combat.character === 'signal' ? 'bolt' : 'capsule',
+        shot.x, shot.y, shot.config.radius * 2 * art.projectileScale, shot.config.radius * 2 * art.projectileScale, angle);
+    }
     for (const swing of combat.swings) {
       const x = combat.player.x + Math.cos(swing.angle) * swing.radius, y = combat.player.y + Math.sin(swing.angle) * swing.radius;
       const size = (swing.length ?? characterWeapons.mechanic.length) * art.paddingScale;
@@ -51,6 +56,7 @@ export class CharacterRenderer {
     }
     for (const effect of combat.effects) {
       const age = characterWeapons.effectDuration - effect.remaining;
+      if (age < (effect.delaySeconds ?? 0)) continue;
       const envelope = effectEnvelope(age, characterWeapons.effectDuration);
       if (effect.to) fx.line('lightning', effect, effect.to, art.boltWidth, envelope.alpha);
       else {

@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { enemyArtConfig as art, enemyRoster } from '../config/enemyRoster';
-import { enemyCombatConfig } from '../config/enemyAttacks';
+import { enemyAttackVisuals, enemyCombatConfig } from '../config/enemyAttacks';
 import { combatConfig } from '../config/combat';
 import type { StageEnemy, StageEnemySystem } from './StageEnemySystem';
 import type { EnemyHazard } from '../combat/EnemyAttackSystem';
-import { assertPositive } from '../config/validate';
+import { assertNonNegative, assertPositive } from '../config/validate';
 import { EffectSprites } from '../combat/EffectSprites';
 import { effectArt as fxArt, effectMotion as motion, effectGround as ground, enemyDeath } from '../config/effects';
 import { effectEnvelope, smoothEffect } from '../combat/EffectMotion';
@@ -18,6 +18,12 @@ export class EnemyRenderer {
   private readonly fx:EffectSprites;
   constructor(scene:Phaser.Scene){
     assertPositive('enemyArt.dashStep',art.dashStep);
+    assertNonNegative('enemyAttackVisuals.windupSquash',enemyAttackVisuals.windupSquash);
+    assertNonNegative('enemyAttackVisuals.activeLungePixels',enemyAttackVisuals.activeLungePixels);
+    assertNonNegative('enemyAttackVisuals.recoveryRecoilPixels',enemyAttackVisuals.recoveryRecoilPixels);
+    assertNonNegative('enemyAttackVisuals.activeTiltRadians',enemyAttackVisuals.activeTiltRadians);
+    assertPositive('effects.enemyWarningFlashSeconds',motion.enemyWarningFlashSeconds);
+    assertNonNegative('effects.enemyWarningFlashWidth',motion.enemyWarningFlashWidth);
     this.scene=scene;this.fx=new EffectSprites(scene);this.graphics=scene.add.graphics().setDepth(8);this.shadows=scene.add.graphics().setDepth(2);
     scene.events.once('shutdown',()=>{
       for(const view of this.views.values())view.destroy();
@@ -48,12 +54,20 @@ export class EnemyRenderer {
       if(e.hp<=0)continue;alive.add(e.id);const d=enemyRoster[e.archetype];if(!d)continue;
       let view=this.views.get(e.id);
       if(!view){view=this.scene.add.image(e.x,e.y,art.keyPrefix+d.sheet,String(d.frame)).setOrigin(.5,art.originY);this.views.set(e.id,view);}
-      const phase=e.action?.phase==='windup'?Math.min(1,e.action.age/Math.max(.01,e.action.spec.windup)):0;
+      const action=e.action;
+      const animatesAttack=!!action&&['melee','shot','charge','beam','hook','lob','stamp','explode'].includes(action.spec.kind);
+      const phase=animatesAttack&&action?.phase==='windup'?Math.min(1,action.age/Math.max(.01,action.spec.windup)):0;
+      const active=animatesAttack&&action?.phase==='active'?Math.sin(Math.PI*Math.min(1,action.age/Math.max(.01,action.spec.active??.1))):0;
+      const recoil=animatesAttack&&action?.phase==='recovery'?Math.max(0,1-action.age/Math.max(.01,action.spec.recovery)):0;
       const gait=e.moving?Math.sin(system.elapsedSeconds*art.gaitHz*Math.PI*2+e.id):0;
       const ratio=view.frame.realWidth/view.frame.realHeight;
-      const height=d.height*(1+phase*art.windupStretch);
-      view.setDisplaySize(height*ratio*(1-phase*art.windupStretch),height);
-      view.setPosition(e.x,e.y-Math.abs(gait)*art.bob).setRotation(gait*art.lean);
+      const windupSquash=animatesAttack&&action?.phase==='windup'?enemyAttackVisuals.windupSquash:0;
+      const height=d.height*(1+phase*art.windupStretch-active*windupSquash);
+      const angle=action?.angle??e.facingAngle;
+      const offset=(active*enemyAttackVisuals.activeLungePixels-recoil*enemyAttackVisuals.recoveryRecoilPixels);
+      view.setDisplaySize(height*ratio*(1-phase*art.windupStretch+windupSquash),height);
+      view.setPosition(e.x+Math.cos(angle)*offset,e.y+Math.sin(angle)*offset-Math.abs(gait)*art.bob)
+        .setRotation(gait*art.lean+Math.sin(active*Math.PI/2)*enemyAttackVisuals.activeTiltRadians*Math.cos(angle));
       view.setFlipX(Math.cos(e.facingAngle)>0).setDepth(10+(e.y-depthOriginY)/this.scene.scale.height);
       const flash=e.hitFlashSeconds>0&&Math.floor((combatConfig.hitFlashSeconds-e.hitFlashSeconds)/combatConfig.flashIntervalSeconds)%2===0;
       if(flash)view.setTintFill(combatConfig.hitColor);else view.clearTint();
@@ -65,7 +79,6 @@ export class EnemyRenderer {
       }
       if(e.shieldSeconds>0)for(const id of e.shieldTargets){const t=system.enemies.find(t=>t.id===id&&t.hp>0);if(t){this.dashed(e.x,e.y,t.x,t.y);this.fx.line('lightning',e,t,fxArt.boltWidth,fxArt.warningAlpha);}}
       if(e.frontalReduction)this.arc(e,enemyCombatConfig.frontalArc,e.size*.8,art.shield,.5);
-      const action=e.action;
       if(action&&['summon','call','command','shield','charge'].includes(action.spec.kind)){
         const active=action.phase==='active',size=e.size*fxArt.shieldScale*fxArt.paddingScale;
         const alpha=action.phase==='windup'?fxArt.warningAlpha*smoothEffect(action.age/Math.max(motion.enterSeconds,action.spec.windup))
@@ -88,6 +101,8 @@ export class EnemyRenderer {
         continue;
       }
       const diameter=p.radius*2*(p.visualScale??1);
+      this.fx.segment({x:p.x-Math.cos(Math.atan2(p.vy,p.vx))*motion.bulletTrailPixels,y:p.y-Math.sin(Math.atan2(p.vy,p.vx))*motion.bulletTrailPixels},
+        p,motion.enemyTrailColor,2,motion.bulletTrailAlpha);
       this.fx.draw('shard',p.x,p.y,diameter*fxArt.projectileScale,diameter*fxArt.projectileScale,Math.atan2(p.vy,p.vx));
     }
     this.fx.end();
@@ -102,7 +117,8 @@ export class EnemyRenderer {
   private hazard(h:EnemyHazard):void {
     const active=h.age>=h.warning,color=active?art.active:art.telegraph;
     const progress=active?1:Math.max(0,Math.min(1,h.age/h.warning));
-    const g=this.graphics;g.lineStyle(art.lineWidth,color,.9).fillStyle(color,active?art.activeAlpha:art.warningAlpha);
+    const flash=active?1-smoothEffect(h.age/motion.enemyWarningFlashSeconds):0;
+    const g=this.graphics;g.lineStyle(art.lineWidth+flash*motion.enemyWarningFlashWidth,color,.9).fillStyle(color,active?art.activeAlpha:art.warningAlpha);
     if(h.kind==='circle'||h.kind==='spawn'){
       g.fillCircle(h.from.x,h.from.y,h.radius).strokeCircle(h.from.x,h.from.y,h.radius);
       if(!active&&progress>0)g.fillStyle(color,art.warningFillAlpha).fillCircle(h.from.x,h.from.y,h.radius*progress)

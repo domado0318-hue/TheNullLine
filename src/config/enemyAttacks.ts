@@ -235,6 +235,10 @@ export const enemyAttackVisuals = {
   bossShotWarningWidth: 44, // 보스 사격 방향 경고선 폭 (px, 피해 판정과 독립)
   projectileScale: 1.6, // 일반 탄환 이미지 확대 배율 (충돌 반경 유지)
   bossProjectileScale: 2.8, // 보스 탄환 이미지 확대 배율 (충돌 반경 유지)
+  windupSquash: 0.08, // 준비 중 캐릭터 몸체 압축 비율 (표시 전용)
+  activeLungePixels: 10, // 발동 순간 공격 방향으로 뻗는 표시 거리 (px)
+  recoveryRecoilPixels: 3, // 회복 중 공격 반대 방향 반동 거리 (px)
+  activeTiltRadians: 0.08, // 발동 순간 몸체 기울기 (라디안)
 };
 export const enemyCombatConfig = {
   spawnGrace: 1, // 등장 후 공격 금지 시간 (초)

@@ -2,6 +2,12 @@ import type { Body, Point } from '../world/geometry';
 import { enemyCombatConfig } from '../config/enemyAttacks';
 
 export type Faction = 'player' | 'enemy';
+export interface AttackVisualEvent {
+  ownerId: number;
+  kind: 'blade' | 'projectile' | 'slash' | 'chain' | 'mine';
+  angle: number;
+  strong: boolean;
+}
 export interface LureTarget extends Point { radius: number; remaining: number }
 export interface Combatant extends Body {
   faction: Faction;

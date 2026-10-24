@@ -723,6 +723,23 @@ test('Idle cycle is time-step independent, loops smoothly and validates breathin
   }
 });
 
+test('Simulation timed attack pose reaches forward then returns without changing facing or locomotion state', () => {
+  const animation=new PlayerAnimation();
+  animation.update(.1,1,0,1,0);
+  const facing=animation.facing;
+  animation.startAttack(Math.PI/2,true);
+  animation.update(playerArtConfig.attackMotionSeconds/4,1,0,1,0);
+  assert.equal(animation.facing,facing);
+  assert.equal(animation.moving,true);
+  assert(animation.attackOffsetY>0,'attack pose extends along the selected attack direction');
+  assert(animation.attackScaleFactor>1,'strong attack receives its configured scale accent');
+  animation.update(playerArtConfig.attackMotionSeconds/4,1,0,1,0);
+  assert(Math.abs(animation.attackProgress-1)<1e-9,'attack pose reaches its extension');
+  animation.update(playerArtConfig.attackMotionSeconds/2,1,0,1,0);
+  assert.equal(animation.attackProgress,0,'pose returns after simulation time expires');
+  assert.equal(animation.attackOffsetY,0);
+});
+
 test('Walking loops four frames in all eight directions, with distinct true profiles and front/rear diagonals', () => {
   const a = new PlayerAnimation();
   const step = 1 / playerArtConfig.frameRate;

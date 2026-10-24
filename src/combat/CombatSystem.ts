@@ -8,7 +8,7 @@ import { bladeHitsBody, obstacleBulletHit } from './hitDetection';
 import { segmentRoundedRectangleHit } from '../world/intersections';
 import { clearAttackLine, effectiveAttackRange, swordSweep, validateWeapon } from './weaponRules';
 import { assertNonNegative } from '../config/validate';
-import type { Combatant, Faction } from './types';
+import type { AttackVisualEvent, Combatant, Faction } from './types';
 import { receivedDamage } from './types';
 
 export interface SwordAttack extends Point {
@@ -34,6 +34,7 @@ export interface BulletAttack extends Point {
 }
 
 export class CombatSystem {
+  onAttackVisual?: (event: AttackVisualEvent) => void;
   readonly swords: SwordAttack[] = [];
   readonly bullets: BulletAttack[] = [];
   private readonly cooldowns = new Map<number, number>();
@@ -111,6 +112,7 @@ export class CombatSystem {
         y: owner.y + Math.sin(angle) * weapon.orbitRadius, weapon, hitIds: new Set(),
       });
       if (owner.faction === 'enemy') owner.attackLockSeconds = weapon.lifetimeSeconds;
+      if (owner.faction === 'player') this.onAttackVisual?.({ ownerId: owner.id, kind: 'blade', angle, strong: false });
     } else if (target) {
       const offset = owner.size / 2 + weapon.radius + weapon.spawnGap;
       this.bullets.push({
@@ -120,6 +122,7 @@ export class CombatSystem {
         age: 0, travelled: 0, weapon,
       });
       if (owner.faction === 'enemy') owner.attackLockSeconds = weapon.attackLockSeconds;
+      if (owner.faction === 'player') this.onAttackVisual?.({ ownerId: owner.id, kind: 'projectile', angle, strong: false });
     } else return;
     this.cooldowns.set(owner.id, weapon.intervalSeconds);
   }

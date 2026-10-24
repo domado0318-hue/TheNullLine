@@ -57,9 +57,10 @@ export class PlayerController {
   syncView(): void {
     this.view.setPosition(this.body.x, this.body.y);
     this.view.setFrame(this.animation.frameFor(this.character)).setFlipX(this.animation.flipX);
-    const size = playerArtConfig.displaySize, breath = this.animation.idleBreath;
+    const size = playerArtConfig.displaySize * this.animation.attackScaleFactor, breath = this.animation.idleBreath;
     const height = size + breath * playerArtConfig.idleHeightPixels;
-    this.view.setDisplaySize(size + breath * playerArtConfig.idleWidthPixels, height);
+    this.view.setDisplaySize(size + breath * playerArtConfig.idleWidthPixels, height).setRotation(this.animation.attackRotation);
+    this.view.setPosition(this.body.x + this.animation.attackOffsetX, this.body.y + this.animation.attackOffsetY);
     // Pin the drawn soles without moving the image position followed by the camera.
     this.view.setOrigin(.5, playerArtConfig.footAnchor - (playerArtConfig.footAnchor - .5) * size / height);
     const elapsed = combatConfig.hitFlashSeconds - this.body.hitFlashSeconds;

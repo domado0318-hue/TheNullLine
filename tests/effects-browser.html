@@ -2,7 +2,8 @@
 <html lang="ko"><meta charset="utf-8"><title>전투 연출 화면 검증</title>
 <style>body{margin:0;background:#101820;color:#eee;font:14px system-ui}#tools{position:relative;z-index:5000;padding:8px}button,select{padding:7px;margin:3px}#game{height:calc(100vh - 100px)}canvas{display:block}#status{margin:4px}</style>
 <div id="tools">
-  <label>연출 <select id="effect"><option value="signal">연쇄 번개·투사체</option><option value="mechanic">톱날·충격파</option><option value="cross">교차 절삭</option><option value="spin">회전 분쇄</option><option value="carrier">폭발·독 장판</option><option value="enemy">적 빔·투사체</option><option value="death">적 사망</option></select></label>
+  <label>연출 <select id="effect"><option value="signal">연쇄 번개·투사체</option><option value="mechanic">톱날·충격파</option><option value="cross">교차 절삭</option><option value="spin">회전 분쇄</option><option value="carrier">폭발·독 장판</option><option value="enemy">적 빔·투사체</option><option value="death">적 사망</option><option value="basic-sword">기본 회전 검</option><option value="basic-bullet">기본 탄환</option><option value="trap">설치형 함정</option><option value="dense">밀집 중첩 장면</option></select></label>
+  <label>비교안 <select id="variant"><option value="current">현재 연출</option><option value="motion">애니메이션만 보강</option><option value="mixed">애니메이션 + 필요한 이펙트</option></select></label>
   <button data-age="0">시작</button><button data-age=".08">초반</button><button data-age=".13">중간</button><button data-age=".3">종료</button><button data-age=".6">한 바퀴 후</button><button id="play">느리게 재생</button>
   <p id="status">검증 전용 페이지 — 캐릭터를 선택하면 실제 배경과 렌더러로 연출을 확인합니다.</p>
 </div><div id="game"></div>
@@ -12,27 +13,37 @@ import {GameScene} from '/src/scenes/GameScene.ts';
 import {CharacterCombat} from '/src/combat/CharacterCombat.ts';
 import {StageEnemySystem} from '/src/enemies/StageEnemySystem.ts';
 import {characterWeapons,auxiliaryWeapons} from '/src/config/characterWeapons.ts';
+import {CombatSystem} from '/src/combat/CombatSystem.ts';
+import {playerBulletConfig} from '/src/config/weapons.ts';
 import {loadGameFont} from '/src/ui/loadGameFont.ts';
 import {ExperienceSystem} from '/src/experience/ExperienceSystem.ts';
 await loadGameFont();
 // Only this test entry owns a stopped clock; production scenes have no debug hooks.
 class Preview extends GameScene { update() {} }
 const game=new Phaser.Game({type:Phaser.AUTO,parent:'game',width:1280,height:720,scale:{mode:Phaser.Scale.FIT,autoCenter:Phaser.Scale.CENTER_BOTH},scene:[Preview]});
-const select=document.querySelector('#effect'),status=document.querySelector('#status');let playback;
+const select=document.querySelector('#effect'),variant=document.querySelector('#variant'),status=document.querySelector('#status');let playback,previewCue;
 function setup(){
   cancelAnimationFrame(playback);
+  previewCue?.destroy();
   const scene=game.scene.getScene('GameScene');if(!scene.character)return;
   scene.encounterTransition?.update(10000);scene.encounterTransition?.update(10000);
   scene.selectingSkill=true;
   const p=scene.player.body,id=select.value;
-  const melee=id==='cross'||id==='spin';
+  const melee=id==='cross'||id==='spin'||id==='basic-sword';
   scene.enemyRenderer.updateDeaths(1,[]);
   const system=new StageEnemySystem(scene.world,()=>.37);system.nextId=scene.enemySystem.nextId;scene.enemySystem=system;
   for(const [type,dx,dy] of (melee ? [['E01',64,0],['E04',300,0],['E03',-64,0]] : [['E01',180,-80],['E04',290,30],['E03',-210,65]])){
     const e=system.create(type,{x:p.x+dx,y:p.y+dy});e.age=2;system.enemies.push(e);
   }
-  const skillId=id==='cross'?7:9;
-  const c=new CharacterCombat(melee?'mechanic':['enemy','death'].includes(id)?'signal':id,p,()=>melee?(skillId-1+.01)/22:.99);scene.character=c;scene.player.setCharacter(c.character);
+  if(id==='dense')for(let i=0;i<12;i++){
+    const angle=i*Math.PI/6,e=system.create(i%2?'E01':'E04',{x:p.x+Math.cos(angle)*155,y:p.y+Math.sin(angle)*115});e.age=2;system.enemies.push(e);
+  }
+  const skillId=id==='cross'?7:id==='trap'?9:9;
+  const character=id==='basic-sword'||id==='cross'||id==='spin'?'mechanic':id==='trap'||id==='carrier'?'carrier':'signal';
+  const c=new CharacterCombat(character,p,()=>melee?(skillId-1+.01)/22:.99);scene.character=c;scene.player.setCharacter(c.character);
+  const attackAngle=Math.atan2(system.enemies[0].y-p.y,system.enemies[0].x-p.x);
+  if(variant.value==='current')scene.player.animation.cancelAttack();else scene.player.animation.startAttack(attackAngle,false);
+  const cue=previewCue=scene.add.graphics().setDepth(9);
   scene.renderActors();scene.impactRenderer.observe(1,[p,...system.enemies]);
   if(melee){
     c.progression.observeLevel(2);const offer=c.progression.offer();
@@ -49,6 +60,27 @@ function setup(){
     for(const [i,angle] of [0,.7,1.4].entries()){
       system.attacks.shoot(e,angle,0,system.attacks.group());const shot=system.attacks.projectiles.at(-1);shot.x=p.x-80+i*80;shot.y=p.y-100;
     }
+  }else if(id==='basic-sword'){
+    c.swings.push({angle:0,age:0,radius:characterWeapons.mechanic.radius,range:characterWeapons.mechanic.range,payload:{strong:false},hitIds:new Set()});
+  }else if(id==='basic-bullet'){
+    c.shots.push({x:p.x-90,y:p.y-40,vx:playerBulletConfig.speed,vy:0,age:0,
+      config:{kind:'projectile',radius:playerBulletConfig.radius,speed:playerBulletConfig.speed,lifetime:playerBulletConfig.lifetimeSeconds,pierce:1},payload:{},hitIds:new Set()});
+  }else if(id==='trap'){
+    c.mines.push({x:p.x+90,y:p.y+90,age:.4,lifetime:3,radius:72,payload:{charged:false}});
+  }else if(id==='dense'){
+    for(let i=0;i<system.enemies.length;i++){
+      if(i>=3)break;
+      const e=system.enemies[i];c.effects.push({x:p.x,y:p.y,to:{x:e.x,y:e.y},radius:0,remaining:characterWeapons.effectDuration,delaySeconds:i*.012});
+    }
+    for(let i=0;i<8;i++)c.shots.push({x:p.x-120+i*32,y:p.y-90,vx:120,vy:i%2?40:-40,age:0,
+      config:{kind:'projectile',radius:5,speed:120,lifetime:2,pierce:1},payload:{},hitIds:new Set()});
+    for(let i=0;i<4;i++)c.zones.push({x:p.x-120+i*80,y:p.y+100,age:.4,tick:0,skill:0,
+      config:{kind:'zone',interval:1,range:0,radius:55,speed:0,lifetime:2,pierce:0,knockback:0,explosion:0,targeted:false},payload:{}});
+    for(let i=0;i<6;i++){
+      const owner=system.enemies[i+3],angle=Math.atan2(p.y-owner.y,p.x-owner.x);
+      system.attacks.shoot(owner,angle,0,system.attacks.group());
+      const shot=system.attacks.projectiles.at(-1);shot.x=owner.x;shot.y=owner.y;
+    }
   }else{
     for(const [i,config] of auxiliaryWeapons[id].filter(w=>w.kind==='projectile').entries())c.shots.push({x:p.x-100+i*80,y:p.y-110,vx:100,vy:0,config});
     const zone=auxiliaryWeapons[id].find(w=>w.kind==='zone');c.zones.push({x:p.x-150,y:p.y+110,age:1,config:zone});
@@ -60,22 +92,34 @@ function setup(){
       else c.mines.push({x:p.x+90,y:p.y+90,age:1,payload:{charged:false}});
     }
   }
-  return {scene,system,c,id,age:0,melee};
+  const basic=id==='basic-sword'?new CombatSystem('sword'):id==='basic-bullet'?new CombatSystem('bullet'):undefined;
+  if(basic)basic.update(.001,p,system.enemies,scene.world,scene.getViewport());
+  return {scene,system,c,id,age:0,melee,attackAngle,cue,basic};
 }
 function render(f,age){
   const delta=Math.max(0,age-f.age);
+  f.scene.player.animation.update(delta,0,0,0,0);
   f.scene.enemyRenderer.updateDeaths(delta,[]);f.age=age;
   if(f.melee){f.c.prepare(delta,f.c.player,f.system.enemies);f.c.update(delta,f.scene.world,f.scene.getViewport());}
   else {
     for(const effect of f.c.effects)effect.remaining=characterWeapons.effectDuration-age;
     for(const swing of f.c.swings){swing.age=age;swing.angle=age*4;}
   }
+  if(f.basic)f.basic.update(delta,f.c.player,f.system.enemies,f.scene.world,f.scene.getViewport());
   for(const h of f.system.attacks.hazards)h.age=age;
-  f.scene.renderActors();f.scene.characterRenderer.sync(f.c);f.scene.impactRenderer.sync();
-  status.textContent=`${select.selectedOptions[0].text} · ${age.toFixed(2)}초 · 생존 적 ${f.system.enemies.length} · 사라지는 몸체 ${f.scene.enemyRenderer.deaths.size}`;
+  f.scene.renderActors();f.scene.characterRenderer.sync(f.c);if(f.basic)f.scene.combatRenderer.sync(f.basic);f.scene.impactRenderer.sync();
+  f.cue.clear();
+  if(variant.value==='mixed'){
+    const from={x:f.c.player.x+Math.cos(f.attackAngle)*26,y:f.c.player.y+Math.sin(f.attackAngle)*26};
+    const to={x:f.c.player.x+Math.cos(f.attackAngle)*50,y:f.c.player.y+Math.sin(f.attackAngle)*50};
+    f.cue.lineStyle(2,0xe4c487,.5).lineBetween(from.x,from.y,to.x,to.y);
+    f.cue.fillStyle(0xffefd0,.55).fillCircle(to.x,to.y,2.5);
+  }
+  const effectCount=f.c.effects.length+f.c.shots.length+f.c.zones.length+f.c.mines.length+f.system.attacks.projectiles.length+f.system.attacks.hazards.length;
+  status.textContent=`${select.selectedOptions[0].text} · ${variant.selectedOptions[0].text} · ${age.toFixed(2)}초 · 생존 적 ${f.system.enemies.length} · 동시 공격 표시 ${effectCount} · Scene 객체 ${f.scene.children.list.length}`;
 }
 function preview(age){const f=setup();if(f)render(f,age);}
-select.onchange=()=>preview(.08);
+select.onchange=()=>preview(.08);variant.onchange=()=>preview(0);
 document.querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>preview(Number(b.dataset.age)));
 document.querySelector('#play').onclick=()=>{const f=setup();if(!f)return;let last=performance.now(),age=0;function tick(now){age+=Math.min(.05,(now-last)/1000)*.25;last=now;render(f,age);if(age<(f.melee?characterWeapons.mechanic.duration+.1:.5))playback=requestAnimationFrame(tick);}playback=requestAnimationFrame(tick);};
 </script></html>

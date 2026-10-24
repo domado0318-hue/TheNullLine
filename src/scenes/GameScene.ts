@@ -101,6 +101,7 @@ export class GameScene extends Phaser.Scene {
     showCharacterSelection(this, (id) => {
       this.character = new CharacterCombat(id, this.player.body);
       this.character.onSound = this.audio.play;
+      this.character.onAttackVisual = event => this.player.animation.startAttack(event.angle, event.strong);
       this.character.onDamage = hit => {
         const enemy = hit.target as Combatant & { archetype?: keyof typeof enemyRoster };
         const topOffset = enemy.archetype ? enemyRoster[enemy.archetype]?.height * enemyArtConfig.originY : undefined;
@@ -112,6 +113,7 @@ export class GameScene extends Phaser.Scene {
       this.renderActors();
       this.characterRenderer.sync(this.character);
       this.combat = new CombatSystem(undefined, damage => this.character!.defend(damage));
+      this.combat.onAttackVisual = event => this.player.animation.startAttack(event.angle, event.strong);
       this.encounterTransition.observe(this.enemySystem);
     });
   }

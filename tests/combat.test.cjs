@@ -51,6 +51,15 @@ test('Player sword hits contact and orbit distances only once per swing on its c
   }
 });
 
+test('Player attack creation emits display-only direction metadata with the generated sword', () => {
+  const body=player(),target=enemy(1,body.x+40,body.y);target.hp=target.maxHp=1000;
+  const combat=new CombatSystem('sword'),events=[];combat.onAttackVisual=event=>events.push(event);
+  combat.update(1/60,body,[target],world(),viewport(body));
+  assert.equal(events.length,1);
+  assert.deepEqual(events[0],{ownerId:body.id,kind:'blade',angle:0,strong:false});
+  assert.equal(combat.swords.length,1,'display event does not consume or replace the generated attack');
+});
+
 test('Player bullets wait for visible enemies, target the closest visible one, and respect the interval', () => {
   const body = player();
   const closest = enemy(1, body.x + 550, body.y);

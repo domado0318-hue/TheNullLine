@@ -57,5 +57,9 @@ export class EffectSprites {
     const tip = Math.min(lineArt.tipSize, width, length);
     this.draw(frame, to.x, to.y, tip, tip, angle, alpha);
   }
+  segment(from:{x:number;y:number},to:{x:number;y:number},color:number,width:number,alpha:number):void {
+    if(width<=0||alpha<=0)return;
+    this.lines.lineStyle(width,color,Math.min(1,alpha)).lineBetween(from.x,from.y,to.x,to.y);
+  }
   end(): void { while (this.images.length > this.used) this.images.pop()!.destroy(); }
 }
