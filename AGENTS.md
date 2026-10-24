@@ -33,6 +33,7 @@
 - `src/player/`: Player 입력·이동·충돌. `src/enemies/`: Enemy 상태·스폰·경로·대기.
 - `src/world/`: 월드·Obstacles·공유 충돌. `src/config/`: 기능별 기획 수치. `src/scenes/`: 기능 연결.
 - `src/ui/`: 무기 선택·HP 표시. `src/combat/`: 자동 공격·피해·피격 효과. 요청 범위를 벗어나는 기능은 추가하지 않는다.
+- `src/audio/`: 오디오 재생 정책과 브라우저 오디오 생명주기. 음향 설정은 `src/config/audio.ts`에서 관리한다.
 - `src/experience/`: 경험치 드롭·흡수·레벨 진행. 경험치 UI는 `src/ui/`, 기획 값은 `src/config/experience.ts`에서 관리한다.
 - 기능을 추가하거나 수정할 때 지침에 남기면 유용한 규칙인지 판단한다. 유용하다면 대상 파일과 구체적인 추가·수정 내용을 먼저 제안하고, 사용자 승인 후에만 `AGENTS.md`를 변경한다. 승인 전에도 지침 변경에 의존하지 않는 요청 작업은 진행할 수 있다.
 

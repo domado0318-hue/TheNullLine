@@ -1,7 +1,7 @@
 # Config
 
-- game / world / player / obstacles / enemies / navigation / combat / weapons / experience / ui로 나누어 기획 수치를 관리한다. 하나의 거대한 설정 파일로 합치지 않는다.
-- HP·기본 공격력은 Player/Enemy, 피해 효과는 combat, 무기 사거리·간격·회전·탄환은 weapons, HP 바·선택 화면은 ui에 둔다.
+- game / world / player / obstacles / enemies / navigation / combat / weapons / experience / ui / audio로 나누어 기획 수치를 관리한다. 하나의 거대한 설정 파일로 합치지 않는다.
+- HP·기본 공격력은 Player/Enemy, 피해 효과는 combat, 무기 사거리·간격·회전·탄환은 weapons, HP 바·선택 화면은 ui, 음향 크기·그룹별 재생 제한·거리와 패닝은 audio에 둔다.
 - 거리·크기는 px, 속도는 px/초, 시간은 초를 기본으로 하고 예외와 배율·면적 단위를 주석으로 명시한다.
 - 색상, 감지/대기 거리, 순찰 범위, 스폰 주기·상한 등 튜닝 값은 해당 기능 설정에 둔다. 0/1, 배열 인덱스 등 일반적인 계산 상수까지 설정화하지 않는다.
 - 기본 수치 변경과 구조 리팩터링을 구분한다. 월드 크기 변경 시 면적별 개수·스폰 여유·경로 격자 비용도 확인한다.
