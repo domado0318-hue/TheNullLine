@@ -32,4 +32,4 @@ description: Implement an existing development plan step by step. Use when the u
 - 계획에 없는 기능은 임의로 추가하지 않는다.
 - 기존 기능이 정상적으로 유지되도록 한다.
 - 계획을 변경해야 한다면 이유를 설명하고 사용자에게 확인한다.
-- 별도 요청 없이 Git Commit을 수행하지 않는다.
+- Git 커밋은 루트 `AGENTS.md`의 Git 규칙을 따른다.
